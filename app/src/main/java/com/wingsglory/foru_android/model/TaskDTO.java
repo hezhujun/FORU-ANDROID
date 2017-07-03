@@ -2,16 +2,18 @@ package com.wingsglory.foru_android.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by hezhujun on 2017/6/24.
  */
-public class TaskDTO {
+public class TaskDTO implements Serializable {
     private Task task;
     private TaskContent taskContent;
     private Addressee addressee;
     private String publisher;
     private String imageUrl;
-    private ImageData image;
+    private Integer creditValue;
 
     public TaskDTO() {
     }
@@ -87,11 +89,11 @@ public class TaskDTO {
         this.imageUrl = imageUrl;
     }
 
-    public ImageData getImage() {
-        return image;
+    public Integer getCreditValue() {
+        return creditValue;
     }
 
-    public void setImage(ImageData image) {
-        this.image = image;
+    public void setCreditValue(Integer creditValue) {
+        this.creditValue = creditValue;
     }
 }

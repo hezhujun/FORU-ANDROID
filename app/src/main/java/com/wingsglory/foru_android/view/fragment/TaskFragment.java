@@ -2,9 +2,8 @@ package com.wingsglory.foru_android.view.fragment;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -40,6 +39,7 @@ import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.task.DownloadImageAsyncTask;
 import com.wingsglory.foru_android.util.AMapUtil;
 import com.wingsglory.foru_android.util.HttpUtil;
+import com.wingsglory.foru_android.view.activity.TaskDetailActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,14 +47,14 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Created by hezhujun on 2017/6/30.
  */
-public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeListener, AMap.OnCameraChangeListener, AMap.OnMapTouchListener, AMap.OnMarkerClickListener {
+public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeListener, AMap.OnCameraChangeListener, AMap.OnMapTouchListener, AMap.OnMarkerClickListener, View.OnClickListener {
     private static final String TAG = "TaskFragment";
 
     private View taskMapInfoView;
@@ -67,17 +67,18 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
     private MapView mMapView;
     private AMap aMap;
     private MyLocationStyle myLocationStyle;
-    private LatLng myLocation = new LatLng(116.480724,39.989584); // 默认是北京
+    private LatLng myLocation = new LatLng(39.989584, 116.480724); // 默认是北京
     private boolean isGetMyLocation;
     private boolean isGetTaskList = false;
 
-    private Set<TaskDTO> taskSet = new HashSet<>();
+    private Map<Integer, TaskDTO> taskBuffer = new HashMap<>();
     private User user;
+    private TaskDTO currentSelectedTask;
 
-    public static TaskFragment newInstance(User user, Set<TaskDTO> taskPublished) {
+    public static TaskFragment newInstance(User user, Map<Integer, TaskDTO> taskPublished) {
         TaskFragment taskFragment = new TaskFragment();
         taskFragment.user = user;
-        taskFragment.taskSet = taskPublished;
+        taskFragment.taskBuffer = taskPublished;
         return taskFragment;
     }
 
@@ -111,6 +112,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_task, container, false);
         taskMapInfoView = view.findViewById(R.id.task_map_info_view);
+        taskMapInfoView.setOnClickListener(this);
         taskTitleView = (TextView) view.findViewById(R.id.task_title);
         taskRewardView = (TextView) view.findViewById(R.id.task_reward);
         taskContentView = (TextView) view.findViewById(R.id.task_content);
@@ -190,8 +192,9 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
     }
 
     public void updateMapTask() {
-        for (TaskDTO task :
-                taskSet) {
+        for (Map.Entry<Integer, TaskDTO> entry :
+                taskBuffer.entrySet()) {
+            TaskDTO task = entry.getValue();
             LatLng position = AMapUtil.parseLatLng(task.getTaskContent().getLatitude(), task.getTaskContent().getLongitude());
             Marker marker = aMap.addMarker(new MarkerOptions().position(position).title(String.valueOf(task.getTask().getId())).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker1)));
             marker.setInfoWindowEnable(false);
@@ -219,26 +222,30 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
     @Override
     public boolean onMarkerClick(Marker marker) {
         taskMapInfoView.setVisibility(View.VISIBLE);
-        int taskId = Integer.parseInt(marker.getTitle());
-        TaskDTO task = null;
-        for (TaskDTO t :
-                taskSet) {
-            if (t.getTask().getId().equals(taskId)) {
-                task = t;
-                break;
-            }
-        }
+        Integer taskId = Integer.parseInt(marker.getTitle());
+        TaskDTO task = taskBuffer.get(taskId);
         if (task != null) {
             taskTitleView.setText(task.getTaskContent().getTitle());
             taskContentView.setText(task.getTaskContent().getContent());
             taskRewardView.setText("赏" + task.getTaskContent().getReward().toString() + "元");
-            userImageView.setImageBitmap(task.getImage().getBitmap());
+            new DownloadImageAsyncTask(task.getImageUrl(), userImageView).execute();
             usernameView.setText(task.getPublisher());
             float distance = AMapUtils.calculateLineDistance(myLocation,
                     AMapUtil.parseLatLng(task.getTaskContent().getLatitude(), task.getTaskContent().getLongitude()));
             positionDistanceView.setText(String.format("%.2f", distance) + "m");
+            currentSelectedTask = task;
         }
         return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.task_map_info_view:
+                Intent intent = TaskDetailActivity.startActivity(getActivity(), currentSelectedTask, user);
+                startActivity(intent);
+                break;
+        }
     }
 
     class TaskListAsyncTask extends AsyncTask<Void, Void, List<TaskDTO>> {
@@ -258,8 +265,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
             if (taskDTOs != null && taskDTOs.size() > 0) {
                 for (TaskDTO task :
                         taskDTOs) {
-                    taskSet.add(task);
-                    new DownloadImageAsyncTask(task).execute();
+                    taskBuffer.put(task.getTask().getId(), task);
                 }
                 updateMapTask();
             }

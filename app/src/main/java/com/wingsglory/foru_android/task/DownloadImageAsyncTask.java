@@ -2,9 +2,13 @@ package com.wingsglory.foru_android.task;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
+import android.support.constraint.solver.Goal;
+import android.widget.ImageView;
 
 import com.wingsglory.foru_android.Globle;
+import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.ImageData;
 import com.wingsglory.foru_android.model.TaskDTO;
 
@@ -15,37 +19,42 @@ import java.net.URL;
  * Created by hezhujun on 2017/7/2.
  */
 
-public class DownloadImageAsyncTask extends AsyncTask<Void, Void, Void> {
+public class DownloadImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
 
-    private TaskDTO taskDTO;
+    private String url;
+    private ImageView imageView;
 
-    public DownloadImageAsyncTask(TaskDTO taskDTO) {
-        this.taskDTO = taskDTO;
+    public DownloadImageAsyncTask(String url, ImageView imageView) {
+        this.url = url;
+        this.imageView = imageView;
     }
 
     @Override
-    protected Void doInBackground(Void... params) {
-        URL picUrl = null;
-        ImageData imageData = new ImageData();
-        imageData.setUrl(taskDTO.getImageUrl());
-        // 判断是否已经下载
-        for (ImageData img :
-                Globle.imageBuffer) {
-            if (img.equals(imageData)) {
-                taskDTO.setImage(img);
-                return null;
-            }
+    protected void onPostExecute(Bitmap bitmap) {
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        } else {
+            imageView.setImageResource(R.drawable.person01);
         }
-        // 没有下载，直接下载
-        try {
-            System.out.println("download image: " + imageData.getUrl());
-            picUrl = new URL(imageData.getUrl());
-            Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
-            imageData.setBitmap(pngBM);
-            Globle.imageBuffer.add(imageData);
-            taskDTO.setImage(imageData);
-        } catch (Exception e) {
-            e.printStackTrace();
+    }
+
+    @Override
+    protected Bitmap doInBackground(Void... params) {
+        if (url != null) {
+            Bitmap bitmap = Globle.imageBuffer.get(url);
+            if (bitmap != null) {
+                return bitmap;
+            } else {
+                try {
+                    System.out.println("download image: " + url);
+                    URL picUrl = new URL(url);
+                    Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
+                    Globle.imageBuffer.put(url, pngBM);
+                    return pngBM;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }

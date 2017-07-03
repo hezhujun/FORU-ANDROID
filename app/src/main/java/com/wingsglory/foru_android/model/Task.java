@@ -1,11 +1,12 @@
 package com.wingsglory.foru_android.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
  * Created by hezhujun on 2017/6/21.
  */
-public class Task {
+public class Task implements Serializable {
     public static final String PUBLISHED = "发布";
     public static final String ACCEPTED = "接受";
     public static final String CONFIRMED = "确认";

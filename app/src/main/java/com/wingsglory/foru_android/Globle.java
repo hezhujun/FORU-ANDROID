@@ -1,5 +1,7 @@
 package com.wingsglory.foru_android;
 
+import android.graphics.Bitmap;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.model.ImageData;
@@ -10,8 +12,10 @@ import com.wingsglory.foru_android.view.activity.MainActivity;
 import com.wingsglory.foru_android.view.activity.RegisterActivity;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -23,7 +27,8 @@ public class Globle {
     public static RegisterActivity registerActivity;
     public static MainActivity mainActivity;
     public static User user;
-    public static Set<ImageData> imageBuffer = new HashSet<ImageData>();
+    public static Map<String, Bitmap> imageBuffer = new HashMap<>();
+    public static TaskDTO currentTask;
 
     static {
         init();

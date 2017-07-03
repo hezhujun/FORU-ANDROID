@@ -1,6 +1,5 @@
 package com.wingsglory.foru_android.view.activity;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -10,11 +9,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
-import com.wingsglory.foru_android.model.Task;
 import com.wingsglory.foru_android.model.TaskDTO;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.view.fragment.AddFragment;
@@ -23,8 +19,8 @@ import com.wingsglory.foru_android.view.fragment.MeFragment;
 import com.wingsglory.foru_android.view.fragment.TaskDetailFragment;
 import com.wingsglory.foru_android.view.fragment.TaskFragment;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
     private MeFragment meFragment;
 
     private User user;
-    private Set<TaskDTO> taskPublished = new HashSet<>();
-    private Set<TaskDTO> taskMyPublished = new HashSet<>();
-    private Set<TaskDTO> taskMyAccepted = new HashSet<>();
+    private Map<Integer, TaskDTO> taskPublishedBuffer = new HashMap<>();
+    private Map<Integer, TaskDTO> taskMyPublishedBuffer = new HashMap<>();
+    private Map<Integer, TaskDTO> taskMyAcceptedBuffer = new HashMap<>();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -79,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.task_fragment:
                 if (taskFragment == null) {
-                    taskFragment = TaskFragment.newInstance(user, taskPublished);
+                    taskFragment = TaskFragment.newInstance(user, taskPublishedBuffer);
                     fragmentTransaction.add(R.id.content, taskFragment);
                 } else {
                     fragmentTransaction.show(taskFragment);
@@ -88,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.task_detail_fragment:
                 if (taskDetailFragment == null) {
-                    taskDetailFragment = TaskDetailFragment.newInstance(taskMyPublished, taskMyAccepted, user);
+                    taskDetailFragment = TaskDetailFragment.newInstance(taskMyPublishedBuffer, taskMyAcceptedBuffer, user);
                     fragmentTransaction.add(R.id.content, taskDetailFragment);
                 } else {
                     fragmentTransaction.show(taskDetailFragment);
@@ -96,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.help_fragment:
                 if (addFragment == null) {
-                    addFragment = AddFragment.newInstance(user, taskPublished, this);
+                    addFragment = AddFragment.newInstance(user, taskPublishedBuffer, this);
                     fragmentTransaction.add(R.id.content, addFragment);
                 } else {
                     fragmentTransaction.show(addFragment);

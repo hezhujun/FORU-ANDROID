@@ -65,7 +65,7 @@ public class TaskExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override

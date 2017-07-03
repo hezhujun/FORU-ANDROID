@@ -1,12 +1,13 @@
 package com.wingsglory.foru_android.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 /**
  * Created by hezhujun on 2017/6/21.
  */
-public class TaskContent {
+public class TaskContent implements Serializable {
     private Integer id;
     private String title;
     private String content;

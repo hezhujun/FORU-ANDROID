@@ -30,15 +30,13 @@
         <activity
             android:name=".view.activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".view.activity.PositionActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".view.activity.AddressActivity" />
         <activity android:name=".view.activity.AddAddressActivity" />
-        <activity android:name=".view.activity.AddresseeListActivity"></activity>
+        <activity android:name=".view.activity.AddresseeListActivity" />
         <activity android:name=".view.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,7 +44,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.RegisterActivity"></activity>
+        <activity android:name=".view.activity.RegisterActivity" />
+        <activity android:name=".view.activity.TaskDetailActivity"></activity>
     </application>
 
 </manifest>

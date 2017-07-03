@@ -18,8 +18,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="10dp"
-                android:background="#ffffff">
+                android:background="@color/white"
+                android:paddingTop="10dp">
 
                 <ImageView
                     android:id="@+id/user_image"
@@ -35,7 +35,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="username"
-                    android:textSize="15pt" />
+                    android:textSize="35sp" />
 
             </LinearLayout>
 
@@ -44,13 +44,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="#ffffff">
+                android:background="@color/white">
 
                 <ImageView
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:padding="5dp"
                     android:layout_marginLeft="5dp"
+                    android:padding="5dp"
                     android:src="@drawable/marker" />
 
                 <TextView
@@ -59,7 +59,7 @@
                     android:layout_weight="1"
                     android:gravity="left|center"
                     android:text="我的地址"
-                    android:textSize="10pt" />
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="20dp"

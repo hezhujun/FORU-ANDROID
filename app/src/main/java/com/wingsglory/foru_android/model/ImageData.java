@@ -2,11 +2,13 @@ package com.wingsglory.foru_android.model;
 
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by hezhujun on 2017/7/2.
  */
 
-public class ImageData {
+public class ImageData implements Serializable {
     private String url;
     private Bitmap bitmap;
 

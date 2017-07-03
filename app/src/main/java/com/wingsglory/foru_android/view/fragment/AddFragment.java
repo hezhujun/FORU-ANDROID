@@ -53,6 +53,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -78,13 +79,13 @@ public class AddFragment extends Fragment implements View.OnClickListener, DateP
     private View publishButton;
 
     private User user;
-    private Set<TaskDTO> taskPublished;
+    private Map<Integer, TaskDTO> taskPublished;
     private MainActivity father;
 
     public AddFragment() {
     }
 
-    public static AddFragment newInstance(User user, Set<TaskDTO> taskPublished, MainActivity father) {
+    public static AddFragment newInstance(User user, Map<Integer, TaskDTO> taskPublished, MainActivity father) {
         AddFragment fragment = new AddFragment();
         fragment.user = user;
         fragment.taskPublished = taskPublished;
@@ -297,7 +298,7 @@ public class AddFragment extends Fragment implements View.OnClickListener, DateP
                     String taskTDOStr = jsonObject.getString("task");
                     Log.d(TAG, "taskTDO json: " + taskTDOStr);
                     TaskDTO taskDTO = objectMapper.readValue(taskTDOStr, TaskDTO.class);
-                    taskPublished.add(taskDTO);
+                    taskPublished.put(taskDTO.getTask().getId(), taskDTO);
                     Log.d(TAG, "task publish success: " + taskDTO);
                 }
                 return result;
