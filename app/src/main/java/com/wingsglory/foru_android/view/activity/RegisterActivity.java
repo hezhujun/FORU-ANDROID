@@ -216,8 +216,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     String userJson = jsonObject.getString("user");
                     gson = new Gson();
                     User user = gson.fromJson(userJson, User.class);
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                    intent.putExtra("user", user);
+                    Intent intent = MainActivity.startActivity(RegisterActivity.this, user);
                     startActivity(intent);
                 } else {
                     Toast.makeText(RegisterActivity.this, result.getErr(), Toast.LENGTH_SHORT).show();

@@ -107,8 +107,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     String userStr = jsonObject.getString("user");
                     ObjectMapper objectMapper = new ObjectMapper();
                     User user = objectMapper.readValue(userStr, User.class);
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    intent.putExtra("user", user);
+                    Intent intent = MainActivity.startActivity(LoginActivity.this, user);
                     startActivity(intent);
                 } else {
                     Toast.makeText(LoginActivity.this, result.getErr(), Toast.LENGTH_SHORT).show();

@@ -3,6 +3,7 @@ package com.wingsglory.foru_android.view.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,13 +51,19 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
+    public static Intent startActivity(Context context, User user) {
+        Intent intent = new Intent(context, MainActivity.class);
+        intent.putExtra("user", user);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent  intent = new Intent();
+        Intent  intent = getIntent();
         user  = (User) intent.getSerializableExtra("user");
-        user = Globle.user;
+//        user = Globle.user;
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
