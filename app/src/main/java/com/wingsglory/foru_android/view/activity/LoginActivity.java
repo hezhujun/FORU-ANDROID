@@ -12,7 +12,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.wingsglory.foru_android.Const;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
@@ -101,11 +100,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 String res = jsonObject.getString("result");
-                Gson gson = new Gson();
-                Result result = gson.fromJson(res, Result.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                Result result = objectMapper.readValue(res, Result.class);
                 if (result.isSuccess()) {
                     String userStr = jsonObject.getString("user");
-                    ObjectMapper objectMapper = new ObjectMapper();
                     User user = objectMapper.readValue(userStr, User.class);
                     Intent intent = MainActivity.startActivity(LoginActivity.this, user);
                     startActivity(intent);

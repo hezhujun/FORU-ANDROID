@@ -15,7 +15,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.Const;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
@@ -157,12 +159,18 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             try {
                 JSONObject jsonObject = jsonObject = new JSONObject(s);
                 String result = jsonObject.getString("result");
-                Gson gson = new Gson();
-                Result res = gson.fromJson(result, Result.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                Result res = objectMapper.readValue(result, Result.class);
                 if (res.isSuccess()) {
                     verificationCode = jsonObject.getString("verification_code");
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (JsonParseException e) {
+                e.printStackTrace();
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
@@ -210,18 +218,23 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 String res = jsonObject.getString("result");
-                Gson gson = new Gson();
-                Result result = gson.fromJson(res, Result.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                Result result = objectMapper.readValue(res, Result.class);
                 if (result.isSuccess()) {
                     String userJson = jsonObject.getString("user");
-                    gson = new Gson();
-                    User user = gson.fromJson(userJson, User.class);
+                    User user = objectMapper.readValue(userJson, User.class);
                     Intent intent = MainActivity.startActivity(RegisterActivity.this, user);
                     startActivity(intent);
                 } else {
                     Toast.makeText(RegisterActivity.this, result.getErr(), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (JsonParseException e) {
+                e.printStackTrace();
+            } catch (JsonMappingException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
