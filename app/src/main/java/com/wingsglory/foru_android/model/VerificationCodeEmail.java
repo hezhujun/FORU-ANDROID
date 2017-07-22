@@ -1,48 +1,20 @@
 package com.wingsglory.foru_android.model;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
-/**
- * Created by hezhujun on 2017/6/21.
- */
 public class VerificationCodeEmail {
-    private String email;
+    private String phone;
+
     private String code;
-    private Timestamp gmtModified;
 
-    public VerificationCodeEmail() {
+    private Date gmtModified;
+
+    public String getPhone() {
+        return phone;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        VerificationCodeEmail that = (VerificationCodeEmail) o;
-
-        return email != null ? email.equals(that.email) : that.email == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return email != null ? email.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "VerificationCodeEmail{" +
-                "email='" + email + '\'' +
-                ", code='" + code + '\'' +
-                ", gmtModified=" + gmtModified +
-                '}';
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
     }
 
     public String getCode() {
@@ -50,14 +22,23 @@ public class VerificationCodeEmail {
     }
 
     public void setCode(String code) {
-        this.code = code;
+        this.code = code == null ? null : code.trim();
     }
 
-    public Timestamp getGmtModified() {
+    public Date getGmtModified() {
         return gmtModified;
     }
 
-    public void setGmtModified(Timestamp gmtModified) {
+    public void setGmtModified(Date gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    @Override
+    public String toString() {
+        return "VerificationCodeEmail{" +
+                "phone='" + phone + '\'' +
+                ", code='" + code + '\'' +
+                ", gmtModified=" + gmtModified +
+                '}';
     }
 }
