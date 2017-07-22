@@ -19,4 +19,5 @@
     <color name="background">#f7f4f4</color>
     <color name="line">#afabab</color>
     <color name="blue">#6767fa</color>
+    <color name="black">#000000</color>
 </resources>

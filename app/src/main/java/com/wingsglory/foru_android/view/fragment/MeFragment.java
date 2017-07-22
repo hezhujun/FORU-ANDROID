@@ -31,7 +31,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_me, container, false);
+        view =  inflater.inflate(R.layout.fragment_me2, container, false);
         View myAddressView = view.findViewById(R.id.my_address);
         myAddressView.setOnClickListener(this);
         return view;
