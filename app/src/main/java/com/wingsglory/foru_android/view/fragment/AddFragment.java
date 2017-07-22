@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
 import com.wingsglory.foru_android.model.Position;
@@ -207,7 +206,7 @@ public class AddFragment extends Fragment implements View.OnClickListener, DateP
         taskContent.setLongitude(String.format("%3.6f", addressPosition.getLng()));
         taskContent.setLatitude(String.format("%3.6f", addressPosition.getLat()));
 
-        task.setPublisher(Globle.user.getId());
+        task.setPublisher(user.getId());
         task.setGmtCreate(new Timestamp(System.currentTimeMillis()));
         task.setGmtModified(new Timestamp(System.currentTimeMillis()));
         task.setState(Task.PUBLISHED);

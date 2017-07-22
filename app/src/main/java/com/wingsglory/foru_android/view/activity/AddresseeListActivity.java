@@ -13,10 +13,10 @@ import android.widget.ListView;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
 import com.wingsglory.foru_android.model.Result;
+import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.HttpUtil;
 import com.wingsglory.foru_android.view.adapter.AddresseeAdapter;
 
@@ -39,6 +39,9 @@ public class AddresseeListActivity extends AppCompatActivity implements AdapterV
     private List<Addressee> addresseeList;
     private AddresseeAdapter addresseeAdapter;
 
+    private User user;
+    private App app;
+
     public static Intent startActivity(Context context) {
         Intent intent = new Intent(context, AddresseeListActivity.class);
         return intent;
@@ -48,12 +51,16 @@ public class AddresseeListActivity extends AppCompatActivity implements AdapterV
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_addressee_list);
+
+        app = (App) getApplication();
+        user = app.getUser();
+
         addresseeListView = (ListView) findViewById(R.id.addressee_list);
         addresseeList = new ArrayList<>();
         addresseeAdapter = new AddresseeAdapter(this, R.layout.address_list_item, addresseeList, null);
         addresseeListView.setAdapter(addresseeAdapter);
         addresseeListView.setOnItemClickListener(this);
-        new GetAddresseeListAsyncTask(Globle.user.getId()).execute();
+        new GetAddresseeListAsyncTask(user.getId()).execute();
     }
 
     @Override

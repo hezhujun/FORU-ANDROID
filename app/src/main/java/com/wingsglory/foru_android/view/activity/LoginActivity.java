@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -13,7 +14,6 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
@@ -26,22 +26,17 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class LoginActivity extends Activity implements View.OnClickListener {
-
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
+
     private TextView phoneView;
     private TextView passwordView;
     private Button signInView;
     private Button signUpView;
 
-    public LoginActivity() {
-        Globle.loginActivity = this;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_login);
 
         phoneView = (TextView) findViewById(R.id.login_et_username);
@@ -51,9 +46,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         signUpView = (Button) findViewById(R.id.register_btn);
         signUpView.setOnClickListener(this);
 
-        if (Globle.mainActivity != null) {
-            Globle.mainActivity.finish();
-        }
     }
 
     @Override
@@ -63,8 +55,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 signIn();
                 break;
             case R.id.register_btn:
-                Intent intent = new Intent(this, RegisterActivity.class);
-                startActivity(intent);
+                RegisterActivity.actionStart(this);
                 break;
             default:
                 break;
@@ -105,8 +96,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 if (result.isSuccess()) {
                     String userStr = jsonObject.getString("user");
                     User user = objectMapper.readValue(userStr, User.class);
-                    Intent intent = MainActivity.startActivity(LoginActivity.this, user);
-                    startActivity(intent);
+                    MainActivity.actionStart(LoginActivity.this);
+                    finish();
                 } else {
                     Toast.makeText(LoginActivity.this, result.getErr(), Toast.LENGTH_SHORT).show();
                 }

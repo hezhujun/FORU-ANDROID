@@ -2,17 +2,12 @@ package com.wingsglory.foru_android.task;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
-import android.support.constraint.solver.Goal;
 import android.widget.ImageView;
 
-import com.wingsglory.foru_android.Globle;
+import com.wingsglory.foru_android.Global;
 import com.wingsglory.foru_android.R;
-import com.wingsglory.foru_android.model.ImageData;
-import com.wingsglory.foru_android.model.TaskDTO;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -41,7 +36,7 @@ public class DownloadImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(Void... params) {
         if (url != null) {
-            Bitmap bitmap = Globle.imageBuffer.get(url);
+            Bitmap bitmap = Global.imageBuffer.get(url);
             if (bitmap != null) {
                 return bitmap;
             } else {
@@ -49,7 +44,7 @@ public class DownloadImageAsyncTask extends AsyncTask<Void, Void, Bitmap> {
                     System.out.println("download image: " + url);
                     URL picUrl = new URL(url);
                     Bitmap pngBM = BitmapFactory.decodeStream(picUrl.openStream());
-                    Globle.imageBuffer.put(url, pngBM);
+                    Global.imageBuffer.put(url, pngBM);
                     return pngBM;
                 } catch (Exception e) {
                     e.printStackTrace();

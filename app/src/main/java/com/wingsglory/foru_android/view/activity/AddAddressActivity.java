@@ -13,11 +13,11 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
 import com.wingsglory.foru_android.model.Position;
 import com.wingsglory.foru_android.model.Result;
+import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.HttpUtil;
 
 import org.json.JSONException;
@@ -50,6 +50,9 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
     private View returnView;
     private TextView toolBarTitle;
 
+    private User user;
+    private App app;
+
     public static Intent startActivity(Context context, String title, int operation, Addressee addressee) {
         Intent intent = new Intent(context, AddAddressActivity.class);
         intent.putExtra("title", title);
@@ -66,6 +69,9 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_address);
+
+        app = (App) getApplication();
+        user = app.getUser();
 
         Intent intent = getIntent();
         String title = intent.getStringExtra("title");
@@ -152,7 +158,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
             addresseeObj.setAddressDetail(addressDetail);
             addresseeObj.setLatitude(String.format("%3.6f", position.getLat()));
             addresseeObj.setLongitude(String.format("%3.6f", position.getLng()));
-            addresseeObj.setUserId(Globle.user.getId());
+            addresseeObj.setUserId(user.getId());
             addresseeObj.setGmtCreate(new Timestamp(System.currentTimeMillis()));
             addresseeObj.setGmtModified(new Timestamp(System.currentTimeMillis()));
             new SaveAddresseeAsyncTask(addresseeObj).execute();

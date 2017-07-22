@@ -14,10 +14,10 @@ import android.widget.Toast;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
 import com.wingsglory.foru_android.model.Result;
+import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.HttpUtil;
 import com.wingsglory.foru_android.view.adapter.AddresseeAdapter;
 
@@ -42,10 +42,17 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     private AddresseeAdapter addresseeAdapter;
     private List<Addressee> addresseeList = new ArrayList<>();
 
+    private User user;
+    private App app;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_address);
+
+        app = (App) getApplication();
+        user = app.getUser();
+
         addAddressView = findViewById(R.id.add_address);
         addAddressView.setOnClickListener(this);
         returnView = findViewById(R.id.return_button);
@@ -58,7 +65,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         addresseeAdapter = new AddresseeAdapter(this, R.layout.address_list_item, addresseeList, new AddresseeListItemOnClickListener());
         addressListView.setAdapter(addresseeAdapter);
         addressListView.setOnItemClickListener(this);
-        new GetAddresseeListAsyncTask(Globle.user.getId()).execute();
+        new GetAddresseeListAsyncTask(user.getId()).execute();
     }
 
     @Override
@@ -87,7 +94,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                     addresseeList.set(position, addressee);
                 }
                 addresseeAdapter.notifyDataSetChanged();
-                new GetAddresseeListAsyncTask(Globle.user.getId()).execute();
+                new GetAddresseeListAsyncTask(user.getId()).execute();
                 break;
             case AddAddressActivity.OPERATION_ERROR:
                 break;
@@ -127,7 +134,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     private void deleteItem(int position) {
         Addressee addressee = addresseeList.remove(position);
         addresseeAdapter.notifyDataSetChanged();
-        new DeleteAddresseeListAsyncTask(Globle.user.getId(), position, addressee).execute();
+        new DeleteAddresseeListAsyncTask(user.getId(), position, addressee).execute();
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.TaskDTO;
 import com.wingsglory.foru_android.model.User;
@@ -23,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    
+    private App app;
 
     private FragmentManager fragmentManager;
     private TaskFragment taskFragment;
@@ -47,19 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
     };
 
-    public static Intent startActivity(Context context, User user) {
+    public static void actionStart(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra("user", user);
-        return intent;
+        context.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent  intent = getIntent();
-        user  = (User) intent.getSerializableExtra("user");
-//        user = Globle.user;
+        
+        app = (App) getApplication();
+        user  = app.getUser();
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

@@ -38,7 +38,8 @@
         <activity android:name=".view.activity.AddressActivity" />
         <activity android:name=".view.activity.AddAddressActivity" />
         <activity android:name=".view.activity.AddresseeListActivity" />
-        <activity android:name=".view.activity.LoginActivity">
+        <activity android:name=".view.activity.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -31,7 +31,6 @@ import com.amap.api.maps.model.MyLocationStyle;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.TaskDTO;
@@ -74,6 +73,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
     private Map<Integer, TaskDTO> taskBuffer = new HashMap<>();
     private User user;
     private TaskDTO currentSelectedTask;
+    private App app;
 
     public static TaskFragment newInstance(User user, Map<Integer, TaskDTO> taskPublished) {
         TaskFragment taskFragment = new TaskFragment();
@@ -88,6 +88,10 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        app = (App) getActivity().getApplication();
+        user = app.getUser();
+
         // 请求获取地理位置权限
         PackageManager pm = getActivity().getPackageManager();
         // Here, thisActivity is the current activity
@@ -104,7 +108,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
             }
         }
 
-        new TaskListAsyncTask(Globle.user.getId(), myLocation.latitude, myLocation.longitude).execute();
+        new TaskListAsyncTask(user.getId(), myLocation.latitude, myLocation.longitude).execute();
     }
 
     @Nullable
@@ -187,7 +191,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
         }
         if (!before && isGetMyLocation) {
             // 第一次获取我的位置成功后重新获取task列表
-            new TaskListAsyncTask(Globle.user.getId(), myLocation.latitude, myLocation.longitude).execute();
+            new TaskListAsyncTask(user.getId(), myLocation.latitude, myLocation.longitude).execute();
         }
     }
 

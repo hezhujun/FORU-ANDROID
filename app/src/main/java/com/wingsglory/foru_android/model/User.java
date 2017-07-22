@@ -2,92 +2,41 @@ package com.wingsglory.foru_android.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 
-/**
- * Created by hezhujun on 2017/6/21.
- */
 public class User implements Serializable {
     private Integer id;
+
     private String username;
+
     private String phone;
+
     private String password;
+
     private String name;
+
     private String email;
+
     private String protraitUrl;
+
     private String rongToken;
-    private String position;
-    private String latitude;
-    private String longitude;
+
+    private BigDecimal latitude;
+
+    private BigDecimal longitude;
+
     private Integer creditValue = 0;
+
     private Integer publishCount = 0;
+
     private Integer doneCount = 0;
+
     private Integer failCount = 0;
+
     private String realName;
+
     private String idCardNo;
-    private BigDecimal deposit = new BigDecimal("0.0");
-    private Timestamp gmtCreate;
-    private Timestamp gmtModified;
 
-    public User() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return id != null ? id.equals(user.id) : user.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", phone='" + phone + '\'' +
-                ", password='" + password + '\'' +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", protraitUrl='" + protraitUrl + '\'' +
-                ", rongToken='" + rongToken + '\'' +
-                ", position='" + position + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", creditValue=" + creditValue +
-                ", publishCount=" + publishCount +
-                ", doneCount=" + doneCount +
-                ", failCount=" + failCount +
-                ", realName='" + realName + '\'' +
-                ", idCardNo='" + idCardNo + '\'' +
-                ", deposit=" + deposit +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                '}';
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
+    private BigDecimal deposit = new BigDecimal(0);
 
     public Integer getId() {
         return id;
@@ -102,7 +51,7 @@ public class User implements Serializable {
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.username = username == null ? null : username.trim();
     }
 
     public String getPhone() {
@@ -110,7 +59,7 @@ public class User implements Serializable {
     }
 
     public void setPhone(String phone) {
-        this.phone = phone;
+        this.phone = phone == null ? null : phone.trim();
     }
 
     public String getPassword() {
@@ -118,7 +67,7 @@ public class User implements Serializable {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = password == null ? null : password.trim();
     }
 
     public String getName() {
@@ -126,7 +75,7 @@ public class User implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = name == null ? null : name.trim();
     }
 
     public String getEmail() {
@@ -134,7 +83,7 @@ public class User implements Serializable {
     }
 
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email == null ? null : email.trim();
     }
 
     public String getProtraitUrl() {
@@ -142,7 +91,7 @@ public class User implements Serializable {
     }
 
     public void setProtraitUrl(String protraitUrl) {
-        this.protraitUrl = protraitUrl;
+        this.protraitUrl = protraitUrl == null ? null : protraitUrl.trim();
     }
 
     public String getRongToken() {
@@ -150,15 +99,23 @@ public class User implements Serializable {
     }
 
     public void setRongToken(String rongToken) {
-        this.rongToken = rongToken;
+        this.rongToken = rongToken == null ? null : rongToken.trim();
     }
 
-    public String getPosition() {
-        return position;
+    public BigDecimal getLatitude() {
+        return latitude;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
+    }
+
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
     }
 
     public Integer getCreditValue() {
@@ -198,7 +155,7 @@ public class User implements Serializable {
     }
 
     public void setRealName(String realName) {
-        this.realName = realName;
+        this.realName = realName == null ? null : realName.trim();
     }
 
     public String getIdCardNo() {
@@ -206,7 +163,7 @@ public class User implements Serializable {
     }
 
     public void setIdCardNo(String idCardNo) {
-        this.idCardNo = idCardNo;
+        this.idCardNo = idCardNo == null ? null : idCardNo.trim();
     }
 
     public BigDecimal getDeposit() {
@@ -217,19 +174,26 @@ public class User implements Serializable {
         this.deposit = deposit;
     }
 
-    public Timestamp getGmtCreate() {
-        return gmtCreate;
-    }
-
-    public void setGmtCreate(Timestamp gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
-
-    public Timestamp getGmtModified() {
-        return gmtModified;
-    }
-
-    public void setGmtModified(Timestamp gmtModified) {
-        this.gmtModified = gmtModified;
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", protraitUrl='" + protraitUrl + '\'' +
+                ", rongToken='" + rongToken + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", creditValue=" + creditValue +
+                ", publishCount=" + publishCount +
+                ", doneCount=" + doneCount +
+                ", failCount=" + failCount +
+                ", realName='" + realName + '\'' +
+                ", idCardNo='" + idCardNo + '\'' +
+                ", deposit=" + deposit +
+                '}';
     }
 }

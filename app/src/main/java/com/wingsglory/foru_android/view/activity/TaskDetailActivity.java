@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.TaskDTO;
 import com.wingsglory.foru_android.model.User;
@@ -37,7 +36,6 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     public static Intent startActivity(Context context, TaskDTO taskDTO, User user) {
         Intent intent = new Intent(context, TaskDetailActivity.class);
-        Globle.currentTask = taskDTO;
         intent.putExtra("user", user);
         return intent;
     }
@@ -48,7 +46,7 @@ public class TaskDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_task_detail);
         try {
             Intent intent = getIntent();
-            task = Globle.currentTask;
+            task = null;
             user = (User) intent.getSerializableExtra("user");
 
             userImageView = (ImageView) findViewById(R.id.user_image);
