@@ -1,6 +1,7 @@
 package com.wingsglory.foru_android.view.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,12 +13,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.HttpUtil;
+import com.wingsglory.foru_android.util.LogUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +30,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
 
@@ -33,6 +42,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView passwordView;
     private Button signInView;
     private Button signUpView;
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +83,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
         }
         new SignInAsyncTask(phone, password).execute();
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(this);
+        }
+        progressDialog.show();
     }
 
-    class SignInAsyncTask extends AsyncTask<Void, Void, String> {
+    class SignInAsyncTask extends AsyncTask<Void, Void, JSONObject> {
         private String phone;
         private String password;
 
@@ -84,49 +99,65 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         @Override
-        protected void onPostExecute(String s) {
-            if ("".equals(s)) {
-                Toast.makeText(LoginActivity.this, "未知错误", Toast.LENGTH_SHORT).show();
-            }
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                String res = jsonObject.getString("result");
-                ObjectMapper objectMapper = new ObjectMapper();
-                Result result = objectMapper.readValue(res, Result.class);
-                if (result.isSuccess()) {
-                    String userStr = jsonObject.getString("user");
-                    User user = objectMapper.readValue(userStr, User.class);
-                    MainActivity.actionStart(LoginActivity.this);
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this, result.getErr(), Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(JSONObject jsonObject) {
+            if (jsonObject == null) {
+                Toast.makeText(LoginActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    String resultStr = jsonObject.getString("result");
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    Result result = objectMapper.readValue(resultStr, Result.class);
+                    if (result.isSuccess()) {
+                        String userStr = jsonObject.getString("user");
+                        User user = objectMapper.readValue(userStr, User.class);
+                        App app = (App) getApplication();
+                        app.setUser(user);
+                        MainActivity.actionStart(LoginActivity.this);
+                        finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, result.getErr(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
-                Toast.makeText(LoginActivity.this, "未知错误", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
         }
 
         @Override
-        protected String doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            FormBody formBody = new FormBody.Builder()
+                    .add("phone", phone)
+                    .add("password", password)
+                    .build();
+            Request request = new Request.Builder()
+                    .post(formBody)
+                    .url(App.BASE_URL + "/user/sign_in")
+                    .build();
             try {
-                HttpUtil.Param param = new HttpUtil.Param();
-                param.put("phone", phone);
-                param.put("password", password);
-                HttpUtil.Header header = new HttpUtil.Header();
-                header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(App.BASE_URL + "/user/sign_in"), header, param);
-                Log.d(TAG, "user sign in " + json);
-                return json;
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    LogUtil.d(TAG, "登录返回：" + json);
+                    JSONObject jsonObject = new JSONObject(json);
+                    return jsonObject;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-            return "";
+            return null;
         }
     }
 
