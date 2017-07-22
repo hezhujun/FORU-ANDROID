@@ -30,7 +30,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
@@ -280,7 +280,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
                 param.put("longitude", AMapUtil.parseLatLngToString(longitude));
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/task/published"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/task/published"), header, param);
                 Log.d(TAG, "task list return:" + json);
                 JSONObject jsonObject = new JSONObject(json);
                 String res = jsonObject.getString("result");

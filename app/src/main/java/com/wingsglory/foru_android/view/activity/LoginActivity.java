@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
@@ -127,7 +127,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                 param.put("password", password);
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/user/sign_in"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/user/sign_in"), header, param);
                 Log.d(TAG, "user sign in " + json);
                 return json;
             } catch (MalformedURLException e) {

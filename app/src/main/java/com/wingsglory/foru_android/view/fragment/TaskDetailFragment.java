@@ -15,12 +15,11 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.TaskDTO;
 import com.wingsglory.foru_android.model.User;
-import com.wingsglory.foru_android.task.DownloadImageAsyncTask;
 import com.wingsglory.foru_android.util.HttpUtil;
 import com.wingsglory.foru_android.view.activity.TaskDetailActivity;
 import com.wingsglory.foru_android.view.adapter.TaskExpandableListAdapter;
@@ -31,7 +30,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by hezhujun on 2017/6/30.
@@ -167,7 +165,7 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
                 param.put("userId", String.valueOf(userId));
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + url), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + url), header, param);
                 Log.d(TAG, "history tasks: " + json);
                 JSONObject jsonObject = new JSONObject(json);
                 String res = jsonObject.getString("result");

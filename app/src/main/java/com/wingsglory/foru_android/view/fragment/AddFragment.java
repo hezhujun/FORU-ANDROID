@@ -2,9 +2,7 @@ package com.wingsglory.foru_android.view.fragment;
 
 import android.app.DatePickerDialog;
 import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,14 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
@@ -39,22 +31,18 @@ import com.wingsglory.foru_android.view.activity.AddresseeListActivity;
 import com.wingsglory.foru_android.view.activity.MainActivity;
 import com.wingsglory.foru_android.view.activity.PositionActivity;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 public class AddFragment extends Fragment implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
@@ -286,7 +274,7 @@ public class AddFragment extends Fragment implements View.OnClickListener, DateP
                 };
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/json");
-                InputStream outputStream = HttpUtil.execute(new URL(Const.BASE_URL + "/task/publish"), header, "POST", holder);
+                InputStream outputStream = HttpUtil.execute(new URL(App.BASE_URL + "/task/publish"), header, "POST", holder);
                 String json = HttpUtil.getContent(outputStream);
                 Log.d(TAG, "task publish result: " + json);
                 ObjectMapper objectMapper = new ObjectMapper();

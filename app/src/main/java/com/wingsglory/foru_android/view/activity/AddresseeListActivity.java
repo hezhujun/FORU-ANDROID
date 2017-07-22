@@ -3,18 +3,16 @@ package com.wingsglory.foru_android.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.constraint.solver.Goal;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
@@ -95,7 +93,7 @@ public class AddresseeListActivity extends AppCompatActivity implements AdapterV
                 param.put("userId", String.valueOf(userId));
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/addressee/list"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/addressee/list"), header, param);
                 Log.d(TAG, "addressee list " + json);
                 JSONObject jsonObject = new JSONObject(json);
                 String res = jsonObject.getString("result");

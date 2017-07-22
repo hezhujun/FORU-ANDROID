@@ -1,12 +1,8 @@
 package com.wingsglory.foru_android.view.activity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +14,7 @@ import android.widget.Toast;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
@@ -141,7 +137,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             try {
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/verification_code/phone"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/verification_code/phone"), header, param);
                 Log.d(TAG, "发送验证码 " + json);
                 return json;
             } catch (IOException e) {
@@ -200,7 +196,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
             try {
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/user/sign_up"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/user/sign_up"), header, param);
                 Log.d(TAG, "注册 " + json);
                 return json;
             } catch (IOException e) {

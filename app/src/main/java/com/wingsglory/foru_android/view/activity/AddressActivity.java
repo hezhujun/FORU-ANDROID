@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
@@ -175,7 +175,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                 param.put("userId", String.valueOf(userId));
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/addressee/list"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/addressee/list"), header, param);
                 Log.d(TAG, "addressee list " + json);
                 JSONObject jsonObject = new JSONObject(json);
                 String res = jsonObject.getString("result");
@@ -228,7 +228,7 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
                 param.put("addresseeId", String.valueOf(addressee.getId()));
                 HttpUtil.Header header = new HttpUtil.Header();
                 header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(Const.BASE_URL + "/addressee/remove"), header, param);
+                String json = HttpUtil.post(new URL(App.BASE_URL + "/addressee/remove"), header, param);
                 Log.d(TAG, "addressee delete " + json);
                 JSONObject jsonObject = new JSONObject(json);
                 String res = jsonObject.getString("result");

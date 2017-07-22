@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wingsglory.foru_android.Const;
+import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.Globle;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
@@ -237,7 +237,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
                         objectMapper.writeValue(outputStream, addressee);
                     }
                 };
-                InputStream inputStream = HttpUtil.execute(new URL(Const.BASE_URL + "/addressee/save"), header, "POST", holder);
+                InputStream inputStream = HttpUtil.execute(new URL(App.BASE_URL + "/addressee/save"), header, "POST", holder);
                 String json = HttpUtil.getContent(inputStream);
                 Log.d(TAG, "addressee add " + json);
                 return json;
@@ -298,7 +298,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
                         objectMapper.writeValue(outputStream, addressee);
                     }
                 };
-                InputStream inputStream = HttpUtil.execute(new URL(Const.BASE_URL + "/addressee/update"), header, "POST", holder);
+                InputStream inputStream = HttpUtil.execute(new URL(App.BASE_URL + "/addressee/update"), header, "POST", holder);
                 String json = HttpUtil.getContent(inputStream);
                 Log.d(TAG, "addressee update " + json);
                 return json;
