@@ -1,24 +1,33 @@
 package com.wingsglory.foru_android.view.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
+import com.wingsglory.foru_android.model.PageBean;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.HttpUtil;
+import com.wingsglory.foru_android.util.LogUtil;
 import com.wingsglory.foru_android.view.adapter.AddresseeAdapter;
 
 import org.json.JSONException;
@@ -31,19 +40,28 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class AddressActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
+public class AddressActivity extends AppCompatActivity
+        implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "AddressActivity";
+
     private View addAddressView;
-    private View returnView;
-    private TextView toolBarTitle;
-    private TextView managerButton;
     private ListView addressListView;
     private AddresseeAdapter addresseeAdapter;
     private List<Addressee> addresseeList = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private User user;
     private App app;
+
+    public static void actionStart(Context context) {
+        Intent intent = new Intent(context, AddressActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +71,83 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         app = (App) getApplication();
         user = app.getUser();
 
+        initView();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        initData();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.addressee_manager, menu);
+        return true;
+    }
+
+    private void initView() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(true);
+            actionBar.setTitle("我的地址");
+        }
+
         addAddressView = findViewById(R.id.add_address);
         addAddressView.setOnClickListener(this);
-        returnView = findViewById(R.id.return_button);
-        returnView.setOnClickListener(this);
-        toolBarTitle = (TextView) findViewById(R.id.tool_bar_title);
-        toolBarTitle.setText("我的地址");
-        managerButton = (TextView) findViewById(R.id.address_manager);
-        managerButton.setOnClickListener(this);
         addressListView = (ListView) findViewById(R.id.address_list);
-        addresseeAdapter = new AddresseeAdapter(this, R.layout.address_list_item, addresseeList, new AddresseeListItemOnClickListener());
+        addresseeAdapter = new AddresseeAdapter(this,
+                R.layout.address_list_item,
+                addresseeList,
+                new AddresseeListItemOnClickListener());
         addressListView.setAdapter(addresseeAdapter);
-        addressListView.setOnItemClickListener(this);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+    }
+
+    private void initData() {
+        addresseeList.clear();
         new GetAddresseeListAsyncTask(user.getId()).execute();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+            case R.id.manager_addressee:
+                if ("管理".equals(item.getTitle())) {
+                    item.setTitle("完成");
+                    addresseeAdapter.showEditAndDeleteButton(true);
+                } else {
+                    item.setTitle("管理");
+                    addresseeAdapter.showEditAndDeleteButton(false);
+                }
+                break;
+            default:
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.add_address:
+                if (addresseeList.size() >= 10) {
+                    Toast.makeText(this, "最多创建10个收货地址", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                AddAddressActivity.actionStart(this, AddAddressActivity.ADDRESS_ADD, null);
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -102,8 +184,8 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+    public void onRefresh() {
+        initData();
     }
 
     class AddresseeListItemOnClickListener implements View.OnClickListener {
@@ -114,12 +196,10 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
             switch (v.getId()) {
                 case R.id.address_item_edit:
                     position = (int) v.getTag();
-//                    Toast.makeText(AddressActivity.this, "editItem " + position, Toast.LENGTH_SHORT).show();
                     editItem(position);
                     break;
                 case R.id.address_item_delete:
                     position = (int) v.getTag();
-//                    Toast.makeText(AddressActivity.this, "delete " + position, Toast.LENGTH_SHORT).show();
                     deleteItem(position);
                     break;
             }
@@ -127,40 +207,18 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void editItem(int position) {
-        Intent intent = AddAddressActivity.startActivity(AddressActivity.this, "更新地址", AddAddressActivity.ADDRESS_UPDATE, addresseeList.get(position));
-        startActivityForResult(intent, AddAddressActivity.ADDRESS_UPDATE);
+        AddAddressActivity.actionStart(this,
+                AddAddressActivity.ADDRESS_UPDATE,
+                addresseeList.get(position));
     }
 
     private void deleteItem(int position) {
         Addressee addressee = addresseeList.remove(position);
         addresseeAdapter.notifyDataSetChanged();
-        new DeleteAddresseeListAsyncTask(user.getId(), position, addressee).execute();
+        new DeleteAddresseeListAsyncTask(user.getId(), addressee).execute();
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.return_button:
-                finish();
-                break;
-            case R.id.add_address:
-                Intent intent = AddAddressActivity.startActivity(this, "添加地址", AddAddressActivity.ADDRESS_ADD, null);
-                startActivityForResult(intent, AddAddressActivity.ADD_ADDRESSEE_SUCCESS);
-                break;
-            case R.id.address_manager:
-                String text = managerButton.getText().toString();
-                if ("管理".equals(text)) {
-                    managerButton.setText("完成");
-                    addresseeAdapter.showEditAndDeleteButton(true);
-                } else {
-                    managerButton.setText("管理");
-                    addresseeAdapter.showEditAndDeleteButton(false);
-                }
-                break;
-        }
-    }
-
-    class GetAddresseeListAsyncTask extends AsyncTask<Void, Void, List<Addressee>> {
+    class GetAddresseeListAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
         private Integer userId;
 
@@ -169,33 +227,61 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         }
 
         @Override
-        protected void onPostExecute(List<Addressee> addressees) {
-            addresseeList.clear();
-            addresseeList.addAll(addressees);
-            addresseeAdapter.notifyDataSetChanged();
+        protected void onPostExecute(JSONObject jsonObject) {
+            if (jsonObject == null) {
+                Toast.makeText(AddressActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String resultStr = jsonObject.getString("result");
+                    Result result = objectMapper.readValue(resultStr, Result.class);
+                    if (result.isSuccess()) {
+                        String addresseesStr = jsonObject.getString("addressees");
+                        PageBean<Addressee> addresseePageBean =
+                                objectMapper.readValue(addresseesStr,
+                                        new TypeReference<PageBean<Addressee>>() {
+                                        });
+                        if (addresseePageBean.size() > 0) {
+                            addresseeList.addAll(addresseePageBean.getBeans());
+                            addresseeAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Toast.makeText(AddressActivity.this, result.getErr(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            mSwipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
-        protected List<Addressee> doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            FormBody formBody = new FormBody.Builder()
+                    .add("userId", String.valueOf(userId))
+                    .add("page", String.valueOf(1))
+                    .add("rows", String.valueOf(10))
+                    .build();
+            Request request = new Request.Builder()
+                    .post(formBody)
+                    .url(App.BASE_URL + "/addressee/list")
+                    .build();
             try {
-                HttpUtil.Param param = new HttpUtil.Param();
-                param.put("userId", String.valueOf(userId));
-                HttpUtil.Header header = new HttpUtil.Header();
-                header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(App.BASE_URL + "/addressee/list"), header, param);
-                Log.d(TAG, "addressee list " + json);
-                JSONObject jsonObject = new JSONObject(json);
-                String res = jsonObject.getString("result");
-                ObjectMapper objectMapper = new ObjectMapper();
-                Result result = objectMapper.readValue(res, Result.class);
-                if (result.isSuccess()) {
-                    String addresseesStr = jsonObject.getString("addressees");
-                    List<Addressee> addressees = objectMapper.readValue(addresseesStr, new TypeReference<List<Addressee>>() {
-                    });
-                    return addressees;
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    LogUtil.d(TAG, "返回地址信息列表：" + json);
+                    JSONObject jsonObject = new JSONObject(json);
+                    return jsonObject;
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -205,53 +291,80 @@ public class AddressActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    class DeleteAddresseeListAsyncTask extends AsyncTask<Void, Void, Boolean> {
+    class DeleteAddresseeListAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
         private Integer userId;
-        private int position;
         private Addressee addressee;
 
-        public DeleteAddresseeListAsyncTask(Integer userId, int position, Addressee addressee) {
+        public DeleteAddresseeListAsyncTask(Integer userId, Addressee addressee) {
             this.userId = userId;
-            this.position = position;
             this.addressee = addressee;
         }
 
         @Override
-        protected void onPostExecute(Boolean success) {
-            if (success) {
+        protected void onPostExecute(JSONObject jsonObject) {
+            if (jsonObject == null) {
+                Toast.makeText(AddressActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
             } else {
-                addresseeList.add(position, addressee);
-                addresseeAdapter.notifyDataSetChanged();
-                Toast.makeText(AddressActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String resultStr = jsonObject.getString("result");
+                    Result result = objectMapper.readValue(resultStr, Result.class);
+                    if (result.isSuccess()) {
+                        Iterator<Addressee> iterator = addresseeList.iterator();
+                        while (iterator.hasNext()) {
+                            Addressee addressee = iterator.next();
+                            if (addressee.getId().equals(this.addressee.getId())) {
+                                iterator.remove();
+                            }
+                        }
+                        addresseeAdapter.notifyDataSetChanged();
+                    } else {
+                        if ("".equals(result.getErr())) {
+                            Toast.makeText(AddressActivity.this, "删除失败",
+                                    Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(AddressActivity.this, result.getErr(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
         @Override
-        protected Boolean doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            FormBody formBody = new FormBody.Builder()
+                    .add("userId", String.valueOf(userId))
+                    .add("addresseeId", String.valueOf(addressee.getId()))
+                    .build();
+            Request request = new Request.Builder()
+                    .post(formBody)
+                    .url(App.BASE_URL + "/addressee/remove")
+                    .build();
             try {
-                HttpUtil.Param param = new HttpUtil.Param();
-                param.put("userId", String.valueOf(userId));
-                param.put("addresseeId", String.valueOf(addressee.getId()));
-                HttpUtil.Header header = new HttpUtil.Header();
-                header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(App.BASE_URL + "/addressee/remove"), header, param);
-                Log.d(TAG, "addressee delete " + json);
-                JSONObject jsonObject = new JSONObject(json);
-                String res = jsonObject.getString("result");
-                ObjectMapper objectMapper = new ObjectMapper();
-                Result result = objectMapper.readValue(res, Result.class);
-                if (result.isSuccess()) {
-                    return true;
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    LogUtil.d(TAG, "删除收货信息返回的消息：" + json);
+                    JSONObject jsonObject = new JSONObject(json);
+                    return jsonObject;
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return false;
+            return null;
         }
     }
 

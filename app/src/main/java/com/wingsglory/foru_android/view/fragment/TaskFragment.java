@@ -108,7 +108,7 @@ public class TaskFragment extends Fragment implements AMap.OnMyLocationChangeLis
             }
         }
 
-        new TaskListAsyncTask(user.getId(), myLocation.latitude, myLocation.longitude).execute();
+//        new TaskListAsyncTask(user.getId(), myLocation.latitude, myLocation.longitude).execute();
     }
 
     @Nullable

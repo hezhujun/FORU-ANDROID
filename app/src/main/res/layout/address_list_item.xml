@@ -18,12 +18,14 @@
             android:paddingBottom="5dp">
 
             <TextView
+                android:textSize="18sp"
                 android:id="@+id/addressee"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="何柱君" />
 
             <TextView
+                android:textSize="18sp"
                 android:id="@+id/phone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
 
         <TextView
             android:id="@+id/address"
+            android:textSize="18sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="湖南省长沙市天心区文源街道韶山南路68号中南大学铁道学院" />

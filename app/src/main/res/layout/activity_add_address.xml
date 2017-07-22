@@ -8,47 +8,13 @@
     android:background="@color/background"
     tools:context="com.wingsglory.foru_android.view.activity.AddAddressActivity">
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="#ffffff"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/return_button"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_gravity="center"
-                android:layout_marginLeft="14dp"
-                android:src="@drawable/goback" />
-        </LinearLayout>
-
-
-
-        <TextView
-            android:id="@+id/tool_bar_title"
-            android:text="title"
-            android:textSize="25sp"
-            android:gravity="center"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-
-        <ImageView
-            android:layout_marginRight="5dp"
-            android:id="@+id/submit_button"
-            android:src="@drawable/right"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <TextView
         android:layout_marginLeft="5dp"
@@ -103,6 +69,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:hint="请输入收货手机号码"
+                android:inputType="phone"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -173,6 +140,30 @@
                 android:layout_gravity="center"
                 android:hint="补充说明" />
         </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="40dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/submit"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="+ 添加" />
+
     </LinearLayout>
 
 </LinearLayout>
