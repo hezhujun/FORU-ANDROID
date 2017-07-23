@@ -449,10 +449,11 @@ public class TaskFragment extends Fragment
             LatLng edge = aMap.getProjection().fromScreenLocation(screenEdge);
             if (edge != null) {
                 int distance = (int) AMapUtils.calculateLineDistance(center, edge);
-                return distance;
+                // 最大10公里
+                return distance > 10000 ? 10000 : distance;
             }
         }
-        return 0;
+        return 10000;
     }
 
     public void hide() {
