@@ -198,7 +198,8 @@ public class AddFragment extends Fragment
         String dateStr = simpleDateFormat.format(date);
         timeoutView.setText(dateStr);
         try {
-            timeout = simpleDateFormat2.parse(dateStr + " 23:59:59");
+            // 设定期限当天的23时就过期
+            timeout = simpleDateFormat2.parse(dateStr + " 23:00:00");
         } catch (ParseException e) {
             e.printStackTrace();
         }
