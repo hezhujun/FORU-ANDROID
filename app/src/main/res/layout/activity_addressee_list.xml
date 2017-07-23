@@ -2,8 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/no_addressee_msg_view"
+        android:background="@color/white"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:text="暂无收货地址\n先到我的页面中添加收货地址吧^_^"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
 
     <ListView
         android:paddingLeft="5dp"

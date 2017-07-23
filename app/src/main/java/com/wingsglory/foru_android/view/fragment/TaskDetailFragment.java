@@ -1,11 +1,9 @@
 package com.wingsglory.foru_android.view.fragment;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +11,32 @@ import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
+import com.wingsglory.foru_android.model.PageBean;
 import com.wingsglory.foru_android.model.Result;
-import com.wingsglory.foru_android.model.TaskDTO;
+import com.wingsglory.foru_android.model.Task;
 import com.wingsglory.foru_android.model.User;
-import com.wingsglory.foru_android.util.HttpUtil;
+import com.wingsglory.foru_android.util.LogUtil;
 import com.wingsglory.foru_android.view.activity.TaskDetailActivity;
 import com.wingsglory.foru_android.view.adapter.TaskExpandableListAdapter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * Created by hezhujun on 2017/6/30.
@@ -38,72 +45,69 @@ import java.util.Map;
 public class TaskDetailFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener, ExpandableListView.OnChildClickListener {
     private static final String TAG = "TaskDetailFragment";
 
-    private Map<Integer, TaskDTO> myTaskPublishedBuffer;
-    private Map<Integer, TaskDTO> myTaskAcceptedBuffer;
-    private List<TaskDTO> myTaskPublishedList;
-    private List<TaskDTO> myTaskAcceptedList;
+    private List<Task> myTaskPublishedList = new ArrayList<>();
+    private List<Task> myTaskAcceptedList = new ArrayList<>();
     private User user;
+    private App app;
+    private Map<Integer, Task> taskBuffer;
+    // 管理获取到的任务数
+    PageBean<Task> publishedPageBean;
+    PageBean<Task> acceptedPageBean;
 
     private ExpandableListView taskDetailListView;
     private TaskExpandableListAdapter adapter;
+    private View view;
 
-    public static TaskDetailFragment newInstance(Map<Integer, TaskDTO> myTaskPublishedBuffer, Map<Integer, TaskDTO> myTaskAcceptedBuffer, User user) {
+    public static TaskDetailFragment newInstance() {
         TaskDetailFragment fragment = new TaskDetailFragment();
-        fragment.myTaskAcceptedBuffer = myTaskAcceptedBuffer;
-        fragment.myTaskPublishedBuffer = myTaskPublishedBuffer;
-
-        fragment.myTaskPublishedList = new ArrayList<>();
-        fragment.myTaskAcceptedList = new ArrayList<>();
-
-        for (Map.Entry<Integer, TaskDTO> entry :
-                myTaskPublishedBuffer.entrySet()) {
-            TaskDTO task = entry.getValue();
-            fragment.myTaskPublishedList.add(task);
-        }
-
-        for (Map.Entry<Integer, TaskDTO> entry :
-                myTaskAcceptedBuffer.entrySet()) {
-            TaskDTO task = entry.getValue();
-            fragment.myTaskAcceptedList.add(task);
-        }
-
-        fragment.user = user;
         return fragment;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new TaskExpandableListAdapter(getActivity(), myTaskPublishedList, myTaskAcceptedList);
-        new HistoryTaskListAsyncTask(user.getId(), "/task/history/published", myTaskPublishedList, myTaskPublishedBuffer).execute();
-        new HistoryTaskListAsyncTask(user.getId(), "/task/history/accepted", myTaskAcceptedList, myTaskAcceptedBuffer).execute();
+        app = (App) getActivity().getApplication();
+        user = app.getUser();
+        taskBuffer = app.getTaskBuffer();
+        adapter = new TaskExpandableListAdapter(getActivity(),
+                myTaskPublishedList, myTaskAcceptedList);
+        publishedPageBean = new PageBean<>();
+        publishedPageBean.setRows(10);
+        publishedPageBean.setBeans(myTaskPublishedList);
+        acceptedPageBean = new PageBean<>();
+        acceptedPageBean.setRows(10);
+        acceptedPageBean.setBeans(myTaskAcceptedList);
+
+        new HistoryTaskListAsyncTask(user.getId(), "/task/history/published",
+                publishedPageBean).execute();
+        new HistoryTaskListAsyncTask(user.getId(), "/task/history/accepted",
+                acceptedPageBean).execute();
+    }
+
+    private void initView() {
+        taskDetailListView = (ExpandableListView) view.findViewById(R.id.task_detail_list_view);
+        taskDetailListView.setOnItemClickListener(this);
+        taskDetailListView.setOnItemSelectedListener(this);
+        taskDetailListView.setOnChildClickListener(this);
+        taskDetailListView.setAdapter(adapter);
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_task_detail, container, false);
-        taskDetailListView = (ExpandableListView) view.findViewById(R.id.task_detail_list_view);
-        taskDetailListView.setOnItemClickListener(this);
-        taskDetailListView.setOnItemSelectedListener(this);
-        taskDetailListView.setOnChildClickListener(this);
-        try {
-            taskDetailListView.setAdapter(adapter);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), "页面初始化失败", Toast.LENGTH_SHORT).show();
-        }
+        view = inflater.inflate(R.layout.fragment_task_detail, container, false);
+        initView();
         return view;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "onItemClick" + position + " " + id);
+
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        Log.d(TAG, "onItemSelected" + position + " " + id);
+
     }
 
     @Override
@@ -112,72 +116,101 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-        Log.d(TAG, "onChildClick " + groupPosition + " " + childPosition + " " + id);
-        TaskDTO task = null;
+    public boolean onChildClick(ExpandableListView parent, View v,
+                                int groupPosition, int childPosition, long id) {
+        Task task = null;
         if (groupPosition == 0) {
             task = myTaskPublishedList.get((int) id);
         } else if (groupPosition == 1) {
             task = myTaskAcceptedList.get((int) id);
         }
         if (task != null) {
-            Intent intent = TaskDetailActivity.startActivity(getActivity(), task, user);
-            startActivity(intent);
+            TaskDetailActivity.actionStart(getActivity(), task);
         }
         return true;
     }
 
-    class HistoryTaskListAsyncTask extends AsyncTask<Void, Void, List<TaskDTO>> {
+    class HistoryTaskListAsyncTask extends AsyncTask<Void, Void, JSONObject> {
         private Integer userId;
         private String url;
-        private List<TaskDTO> saveList;
-        private Map<Integer, TaskDTO> saveBuffer;
+        private PageBean<Task> pageManager;
 
-        public HistoryTaskListAsyncTask(Integer userId, String url, List<TaskDTO> saveList, Map<Integer, TaskDTO> saveBuffer) {
+        public HistoryTaskListAsyncTask(Integer userId, String url, PageBean<Task> taskPageBean) {
             this.userId = userId;
             this.url = url;
-            this.saveList = saveList;
-            this.saveBuffer = saveBuffer;
+            this.pageManager = taskPageBean;
         }
 
         @Override
-        protected void onPostExecute(List<TaskDTO> taskDTOs) {
-            if (taskDTOs != null && taskDTOs.size() > 0) {
-                for (TaskDTO task :
-                        taskDTOs) {
-                    saveBuffer.put(task.getTask().getId(), task);
+        protected void onPostExecute(JSONObject jsonObject) {
+            if (jsonObject == null) {
+                Toast.makeText(getActivity(), "网络异常，获取我的任务信息失败", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String resultStr = jsonObject.getString("result");
+                    Result result = objectMapper.readValue(resultStr, Result.class);
+                    if (result.isSuccess()) {
+                        String tasksStr = jsonObject.getString("tasks");
+                        PageBean<Task> taskPageBean = objectMapper.readValue(tasksStr,
+                                new TypeReference<PageBean<Task>>() {
+                                });
+                        pageManager.setTotalRows(taskPageBean.getTotalRows());
+                        pageManager.setPage(taskPageBean.getPage());
+                        // 第一页清空数据
+                        if (taskPageBean.getPage() == 1) {
+                            pageManager.getBeans().clear();
+                        }
+                        if (taskPageBean.size() > 0) {
+                            for (Task task :
+                                    taskPageBean.getBeans()) {
+                                pageManager.getBeans().add(task);
+                                taskBuffer.put(task.getId(), task);
+                            }
+                            adapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), result.getErr(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                for (Map.Entry<Integer, TaskDTO> entry :
-                        saveBuffer.entrySet()) {
-                    TaskDTO task = entry.getValue();
-                    saveList.add(task);
-                }
-
-                adapter.notifyDataSetChanged();
             }
         }
 
         @Override
-        protected List<TaskDTO> doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            FormBody.Builder builder = new FormBody.Builder()
+                    .add("userId", String.valueOf(userId))
+                    .add("rows", String.valueOf(pageManager.getRows()));
+            if (pageManager.getPage() == 1 && pageManager.size() == 0) {
+                builder.add("page", String.valueOf(1));
+            } else {
+                builder.add("page", String.valueOf(pageManager.getPage() + 1));
+            }
+            FormBody formBody = builder.build();
+            Request request = new Request.Builder()
+                    .post(formBody)
+                    .url(App.BASE_URL + url)
+                    .build();
             try {
-                HttpUtil.Param param = new HttpUtil.Param();
-                param.put("userId", String.valueOf(userId));
-                HttpUtil.Header header = new HttpUtil.Header();
-                header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(App.BASE_URL + url), header, param);
-                Log.d(TAG, "history tasks: " + json);
-                JSONObject jsonObject = new JSONObject(json);
-                String res = jsonObject.getString("result");
-                ObjectMapper mapper = new ObjectMapper();
-                Result result = mapper.readValue(res, Result.class);
-                if (result.isSuccess()) {
-                    String taskStr = jsonObject.getString("tasks");
-                    List<TaskDTO> taskList = mapper.readValue(taskStr, new TypeReference<List<TaskDTO>>() {
-                    });
-                    return taskList;
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    LogUtil.d(TAG, url + "返回" + json);
+                    JSONObject jsonObject = new JSONObject(json);
+                    return jsonObject;
                 }
-            } catch (Exception e) {
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
             return null;

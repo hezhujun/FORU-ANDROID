@@ -1,50 +1,42 @@
 package com.wingsglory.foru_android.model;
 
-/**
- * Created by hezhujun on 2017/6/21.
- */
-public class Relation {
-    public static final String NORMAL = "正常";
-    public static final String CONCERN = "关注";
-    public static final String BLACK = "拉黑";
+import java.io.Serializable;
 
-    private RelationId id;
+public class Relation extends RelationKey implements Serializable {
+
+    public static final String RELATION_NORMAL = "正常";
+    public static final String RELATION_FRIEND = "关注";
+    public static final String RELATION_BLACK = "拉黑";
+
+    private User user1;
+
+    private User user2;
+
     private Integer interactionCount = 0;
-    private String relation = NORMAL;
+
+    private String relation;
 
     public Relation() {
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Relation relation = (Relation) o;
-
-        return id != null ? id.equals(relation.id) : relation.id == null;
+    public Relation(Integer user1Id, Integer user2Id) {
+        super(user1Id, user2Id);
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+    public User getUser1() {
+        return user1;
     }
 
-    @Override
-    public String toString() {
-        return "Relation{" +
-                "id=" + id +
-                ", interactionCount=" + interactionCount +
-                ", relation='" + relation + '\'' +
-                '}';
+    public void setUser1(User user1) {
+        this.user1 = user1;
     }
 
-    public RelationId getId() {
-        return id;
+    public User getUser2() {
+        return user2;
     }
 
-    public void setId(RelationId id) {
-        this.id = id;
+    public void setUser2(User user2) {
+        this.user2 = user2;
     }
 
     public Integer getInteractionCount() {
@@ -60,7 +52,16 @@ public class Relation {
     }
 
     public void setRelation(String relation) {
-        this.relation = relation;
+        this.relation = relation == null ? null : relation.trim();
     }
 
+    @Override
+    public String toString() {
+        return "Relation{" +
+                "user1=" + user1 +
+                ", user2=" + user2 +
+                ", interactionCount=" + interactionCount +
+                ", relation='" + relation + '\'' +
+                '}';
+    }
 }

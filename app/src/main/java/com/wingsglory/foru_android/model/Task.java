@@ -1,72 +1,39 @@
 package com.wingsglory.foru_android.model;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 
-/**
- * Created by hezhujun on 2017/6/21.
- */
 public class Task implements Serializable {
-    public static final String PUBLISHED = "发布";
-    public static final String ACCEPTED = "接受";
-    public static final String CONFIRMED = "确认";
-    public static final String COMPLETE = "完成";
-    public static final String DELETED = "失效";
-    public static final String FAILED = "失败";
 
-    public static final int PUBLISHER_CONFIRM_ZERO = 0;
-    public static final int PUBLISHER_CONFIRM_FIRST = 1;
-    public static final int PUBLISHER_CONFIRM_SECOND = 2;
-    public static final int RECIPIENT_CONFIRM_ZERO = 0;
-    public static final int RECIPIENT_CONFIRM_FIRST = 1;
-    public static final int RECIPIENT_CONFIRM_SECOND = 2;
+    public static final String TASK_STATE_NEW = "新建";
+    public static final String TASK_STATE_WAIT_FOR_COMPLETE = "待完成";
+    public static final String TASK_STATE_WAIT_FOR_CONFIRM = "待确认";
+    public static final String TASK_STATE_COMPLETE = "完成";
+    public static final String TASK_STATE_OVERDUE = "过期";
+    public static final String TASK_STATE_FAIL = "失败";
+    public static final String TASK_STATE_DELETE = "删除";
 
     private Integer id;
-    private Integer publisher;
-    private Integer recipient;
-    private String state = ACCEPTED;
-    private String expressWaybillNumber;
-    private Integer publisherConfirm = PUBLISHER_CONFIRM_ZERO;
-    private Integer recipientConfirm = RECIPIENT_CONFIRM_ZERO;
+
+    private Integer publisherId;
+
+    private User publisher;
+
+    private Integer recipientId;
+
+    private User recipient;
+
+    private String state = TASK_STATE_NEW;
+
+    private Integer contentId;
+
+    private TaskContent content;
+
     private Integer evaluationToPublisher;
+
     private Integer evaluationToRecipient;
-    private Timestamp gmtCreate;
-    private Timestamp gmtModified;
 
-    public Task() {
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Task task = (Task) o;
-
-        return id != null ? id.equals(task.id) : task.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", publisher=" + publisher +
-                ", recipient=" + recipient +
-                ", state=" + state +
-                ", expressWaybillNumber='" + expressWaybillNumber + '\'' +
-                ", publisherConfirm=" + publisherConfirm +
-                ", recipientConfirm=" + recipientConfirm +
-                ", evaluationToPublisher=" + evaluationToPublisher +
-                ", evaluationToRecipient=" + evaluationToRecipient +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModified=" + gmtModified +
-                '}';
-    }
+    private Date gmtCreate;
 
     public Integer getId() {
         return id;
@@ -76,20 +43,20 @@ public class Task implements Serializable {
         this.id = id;
     }
 
-    public Integer getPublisher() {
-        return publisher;
+    public Integer getPublisherId() {
+        return publisherId;
     }
 
-    public void setPublisher(Integer publisher) {
-        this.publisher = publisher;
+    public void setPublisherId(Integer publisherId) {
+        this.publisherId = publisherId;
     }
 
-    public Integer getRecipient() {
-        return recipient;
+    public Integer getRecipientId() {
+        return recipientId;
     }
 
-    public void setRecipient(Integer recipient) {
-        this.recipient = recipient;
+    public void setRecipientId(Integer recipientId) {
+        this.recipientId = recipientId;
     }
 
     public String getState() {
@@ -97,31 +64,15 @@ public class Task implements Serializable {
     }
 
     public void setState(String state) {
-        this.state = state;
+        this.state = state == null ? null : state.trim();
     }
 
-    public String getExpressWaybillNumber() {
-        return expressWaybillNumber;
+    public Integer getContentId() {
+        return contentId;
     }
 
-    public void setExpressWaybillNumber(String expressWaybillNumber) {
-        this.expressWaybillNumber = expressWaybillNumber;
-    }
-
-    public Integer getPublisherConfirm() {
-        return publisherConfirm;
-    }
-
-    public void setPublisherConfirm(Integer publisherConfirm) {
-        this.publisherConfirm = publisherConfirm;
-    }
-
-    public Integer getRecipientConfirm() {
-        return recipientConfirm;
-    }
-
-    public void setRecipientConfirm(Integer recipientConfirm) {
-        this.recipientConfirm = recipientConfirm;
+    public void setContentId(Integer contentId) {
+        this.contentId = contentId;
     }
 
     public Integer getEvaluationToPublisher() {
@@ -140,19 +91,52 @@ public class Task implements Serializable {
         this.evaluationToRecipient = evaluationToRecipient;
     }
 
-    public Timestamp getGmtCreate() {
+    public Date getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Timestamp gmtCreate) {
+    public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Timestamp getGmtModified() {
-        return gmtModified;
+    public User getPublisher() {
+        return publisher;
     }
 
-    public void setGmtModified(Timestamp gmtModified) {
-        this.gmtModified = gmtModified;
+    public void setPublisher(User publisher) {
+        this.publisher = publisher;
+    }
+
+    public User getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
+    }
+
+    public TaskContent getContent() {
+        return content;
+    }
+
+    public void setContent(TaskContent content) {
+        this.content = content;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", publisherId=" + publisherId +
+                ", publisher=" + publisher +
+                ", recipientId=" + recipientId +
+                ", recipient=" + recipient +
+                ", state='" + state + '\'' +
+                ", contentId=" + contentId +
+                ", content=" + content +
+                ", evaluationToPublisher=" + evaluationToPublisher +
+                ", evaluationToRecipient=" + evaluationToRecipient +
+                ", gmtCreate=" + gmtCreate +
+                '}';
     }
 }

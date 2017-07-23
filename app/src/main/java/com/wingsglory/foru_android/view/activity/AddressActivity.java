@@ -110,7 +110,6 @@ public class AddressActivity extends AppCompatActivity
     }
 
     private void initData() {
-        addresseeList.clear();
         new GetAddresseeListAsyncTask(user.getId()).execute();
     }
 
@@ -242,6 +241,7 @@ public class AddressActivity extends AppCompatActivity
                                         new TypeReference<PageBean<Addressee>>() {
                                         });
                         if (addresseePageBean.size() > 0) {
+                            addresseeList.clear();
                             addresseeList.addAll(addresseePageBean.getBeans());
                             addresseeAdapter.notifyDataSetChanged();
                         }

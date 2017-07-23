@@ -2,72 +2,28 @@ package com.wingsglory.foru_android.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
+import java.util.Date;
 
-/**
- * Created by hezhujun on 2017/6/21.
- */
 public class TaskContent implements Serializable {
     private Integer id;
+
     private String title;
+
     private String content;
+
     private String targetPosition;
-    private String latitude;
-    private String longitude;
-    private Integer addressee;
-    private String good;
-    private Timestamp timeout;
-    private BigDecimal reward;
 
-    public TaskContent() {
-    }
+    private BigDecimal latitude;
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    private BigDecimal longitude;
 
-        TaskContent that = (TaskContent) o;
+    private Integer addresseeId;
 
-        return id != null ? id.equals(that.id) : that.id == null;
-    }
+    private Addressee addressee;
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
+    private Date timeout;
 
-    @Override
-    public String toString() {
-        return "TaskContent{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", targetPosition='" + targetPosition + '\'' +
-                ", latitude='" + latitude + '\'' +
-                ", longitude='" + longitude + '\'' +
-                ", addressee=" + addressee +
-                ", good='" + good + '\'' +
-                ", timeout=" + timeout +
-                ", reward=" + reward +
-                '}';
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
+    private BigDecimal reward = new BigDecimal(0);
 
     public Integer getId() {
         return id;
@@ -82,7 +38,7 @@ public class TaskContent implements Serializable {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = title == null ? null : title.trim();
     }
 
     public String getContent() {
@@ -90,7 +46,7 @@ public class TaskContent implements Serializable {
     }
 
     public void setContent(String content) {
-        this.content = content;
+        this.content = content == null ? null : content.trim();
     }
 
     public String getTargetPosition() {
@@ -98,30 +54,38 @@ public class TaskContent implements Serializable {
     }
 
     public void setTargetPosition(String targetPosition) {
-        this.targetPosition = targetPosition;
+        this.targetPosition = targetPosition == null ? null : targetPosition.trim();
     }
 
-    public Integer getAddressee() {
-        return addressee;
+    public BigDecimal getLatitude() {
+        return latitude;
     }
 
-    public void setAddressee(Integer addressee) {
-        this.addressee = addressee;
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
     }
 
-    public String getGood() {
-        return good;
+    public BigDecimal getLongitude() {
+        return longitude;
     }
 
-    public void setGood(String good) {
-        this.good = good;
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
     }
 
-    public Timestamp getTimeout() {
+    public Integer getAddresseeId() {
+        return addresseeId;
+    }
+
+    public void setAddresseeId(Integer addresseeId) {
+        this.addresseeId = addresseeId;
+    }
+
+    public Date getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(Timestamp timeout) {
+    public void setTimeout(Date timeout) {
         this.timeout = timeout;
     }
 
@@ -131,5 +95,29 @@ public class TaskContent implements Serializable {
 
     public void setReward(BigDecimal reward) {
         this.reward = reward;
+    }
+
+    public Addressee getAddressee() {
+        return addressee;
+    }
+
+    public void setAddressee(Addressee addressee) {
+        this.addressee = addressee;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskContent{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", targetPosition='" + targetPosition + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", addresseeId=" + addresseeId +
+                ", addressee=" + addressee +
+                ", timeout=" + timeout +
+                ", reward=" + reward +
+                '}';
     }
 }

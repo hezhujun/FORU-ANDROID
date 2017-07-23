@@ -3,46 +3,51 @@ package com.wingsglory.foru_android.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Addressee;
+import com.wingsglory.foru_android.model.PageBean;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
-import com.wingsglory.foru_android.util.HttpUtil;
+import com.wingsglory.foru_android.util.LogUtil;
 import com.wingsglory.foru_android.view.adapter.AddresseeAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddresseeListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
-    private static final String TAG = "AddresseeListActivity";
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-    public static final int SELECT_ADDRESSEE = 11;
-    public static final int NO_SELECT_ADDRESSEE = 10;
+public class AddresseeListActivity extends AppCompatActivity
+        implements AdapterView.OnItemClickListener {
+    private static final String TAG = "AddresseeListActivity";
 
     private ListView addresseeListView;
     private List<Addressee> addresseeList;
     private AddresseeAdapter addresseeAdapter;
+    private View noAddresseeMsgView;
 
     private User user;
     private App app;
 
-    public static Intent startActivity(Context context) {
+    public static Intent actionStart(Context context, int requestCode) {
         Intent intent = new Intent(context, AddresseeListActivity.class);
         return intent;
     }
@@ -55,9 +60,11 @@ public class AddresseeListActivity extends AppCompatActivity implements AdapterV
         app = (App) getApplication();
         user = app.getUser();
 
+        noAddresseeMsgView = findViewById(R.id.no_addressee_msg_view);
         addresseeListView = (ListView) findViewById(R.id.addressee_list);
         addresseeList = new ArrayList<>();
-        addresseeAdapter = new AddresseeAdapter(this, R.layout.address_list_item, addresseeList, null);
+        addresseeAdapter = new AddresseeAdapter(this,
+                R.layout.address_list_item, addresseeList, null);
         addresseeListView.setAdapter(addresseeAdapter);
         addresseeListView.setOnItemClickListener(this);
         new GetAddresseeListAsyncTask(user.getId()).execute();
@@ -68,17 +75,17 @@ public class AddresseeListActivity extends AppCompatActivity implements AdapterV
         Addressee addressee = addresseeList.get(position);
         Intent intent = new Intent();
         intent.putExtra("addressee", addressee);
-        setResult(SELECT_ADDRESSEE, intent);
+        setResult(RESULT_OK, intent);
         finish();
     }
 
     @Override
     public void onBackPressed() {
-        setResult(NO_SELECT_ADDRESSEE);
+        setResult(RESULT_CANCELED);
         super.onBackPressed();
     }
 
-    class GetAddresseeListAsyncTask extends AsyncTask<Void, Void, List<Addressee>> {
+    class GetAddresseeListAsyncTask extends AsyncTask<Void, Void, JSONObject> {
 
         private Integer userId;
 
@@ -87,33 +94,62 @@ public class AddresseeListActivity extends AppCompatActivity implements AdapterV
         }
 
         @Override
-        protected void onPostExecute(List<Addressee> addressees) {
-            addresseeList.clear();
-            addresseeList.addAll(addressees);
-            addresseeAdapter.notifyDataSetChanged();
+        protected void onPostExecute(JSONObject jsonObject) {
+            if (jsonObject == null) {
+                Toast.makeText(AddresseeListActivity.this, "网络异常", Toast.LENGTH_SHORT).show();
+            } else {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String resultStr = jsonObject.getString("result");
+                    Result result = objectMapper.readValue(resultStr, Result.class);
+                    if (result.isSuccess()) {
+                        String addresseesStr = jsonObject.getString("addressees");
+                        PageBean<Addressee> addresseePageBean =
+                                objectMapper.readValue(addresseesStr,
+                                        new TypeReference<PageBean<Addressee>>() {
+                                        });
+                        if (addresseePageBean.size() > 0) {
+                            addresseeList.clear();
+                            addresseeList.addAll(addresseePageBean.getBeans());
+                            addresseeAdapter.notifyDataSetChanged();
+                            noAddresseeMsgView.setVisibility(View.GONE);
+                        }
+                    } else {
+                        Toast.makeText(AddresseeListActivity.this, result.getErr(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (JsonParseException e) {
+                    e.printStackTrace();
+                } catch (JsonMappingException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
-        protected List<Addressee> doInBackground(Void... params) {
+        protected JSONObject doInBackground(Void... params) {
+            OkHttpClient client = new OkHttpClient();
+            FormBody formBody = new FormBody.Builder()
+                    .add("userId", String.valueOf(userId))
+                    .add("page", String.valueOf(1))
+                    .add("rows", String.valueOf(10))
+                    .build();
+            Request request = new Request.Builder()
+                    .post(formBody)
+                    .url(App.BASE_URL + "/addressee/list")
+                    .build();
             try {
-                HttpUtil.Param param = new HttpUtil.Param();
-                param.put("userId", String.valueOf(userId));
-                HttpUtil.Header header = new HttpUtil.Header();
-                header.put("Content-Type", "application/x-www-form-urlencoded");
-                String json = HttpUtil.post(new URL(App.BASE_URL + "/addressee/list"), header, param);
-                Log.d(TAG, "addressee list " + json);
-                JSONObject jsonObject = new JSONObject(json);
-                String res = jsonObject.getString("result");
-                ObjectMapper objectMapper = new ObjectMapper();
-                Result result = objectMapper.readValue(res, Result.class);
-                if (result.isSuccess()) {
-                    String addresseesStr = jsonObject.getString("addressees");
-                    List<Addressee> addressees = objectMapper.readValue(addresseesStr, new TypeReference<List<Addressee>>() {
-                    });
-                    return addressees;
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String json = response.body().string();
+                    LogUtil.d(TAG, "返回地址信息列表：" + json);
+                    JSONObject jsonObject = new JSONObject(json);
+                    return jsonObject;
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {

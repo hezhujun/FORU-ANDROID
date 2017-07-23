@@ -133,7 +133,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                     progressDialog = new ProgressDialog(this);
                 }
 
-                progressDialog.setMessage("请稍后。。。");
+                progressDialog.setMessage("请稍后...");
                 progressDialog.setCancelable(false);
                 progressDialog.show();
                 break;

@@ -196,6 +196,7 @@
             android:background="@color/blue">
 
             <TextView
+                android:textSize="20sp"
                 android:id="@+id/publish_button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -206,9 +207,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
-
-
 
 </FrameLayout>

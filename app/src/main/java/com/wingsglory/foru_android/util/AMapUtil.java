@@ -196,12 +196,6 @@ public class AMapUtil {
         return busLineName.replaceAll("\\(.*?\\)", "");
     }
 
-    public static LatLng parseLatLng(String lat, String lng) {
-        double latitude = Double.parseDouble(lat);
-        double longitude = Double.parseDouble(lng);
-        return new LatLng(latitude, longitude);
-    }
-
     public static String parseLatLngToString(double value) {
         return String.format("%3.6f", value);
     }

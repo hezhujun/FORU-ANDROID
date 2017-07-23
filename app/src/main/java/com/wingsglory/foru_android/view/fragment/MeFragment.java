@@ -66,7 +66,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     private void initData() {
         user = app.getUser();
         if (user.getProtraitUrl() != null && !"".equals(user.getProtraitUrl())) {
-            Glide.with(this).load(user.getProtraitUrl()).into(userImageView);
+            Glide.with(this).load(user.getProtraitUrl())
+                    .placeholder(R.drawable.person01)
+                    .into(userImageView);
         }
         usernameView.setText(user.getUsername());
     }

@@ -205,7 +205,7 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
         }
-        progressDialog.setMessage("请稍后。。。");
+        progressDialog.setMessage("请稍后...");
         progressDialog.setCancelable(false);
         progressDialog.show();
     }
@@ -262,10 +262,12 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
                         builder.show();
                     } else {
                         if (operation == ADDRESS_ADD) {
-                            Toast.makeText(AddAddressActivity.this, "添加失败",
+                            Toast.makeText(AddAddressActivity.this,
+                                    "添加失败\n" + result.getErr(),
                                     Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(AddAddressActivity.this, "修改失败",
+                            Toast.makeText(AddAddressActivity.this,
+                                    "修改失败\n" + result.getErr(),
                                     Toast.LENGTH_SHORT).show();
                         }
                     }

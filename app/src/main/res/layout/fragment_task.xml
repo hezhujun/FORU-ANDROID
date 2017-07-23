@@ -73,11 +73,10 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/user_image"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
-                        android:scaleType="fitCenter"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/person01" />
                     <TextView

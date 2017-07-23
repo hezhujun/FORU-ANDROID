@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
         }
-        progressDialog.setMessage("请稍后。。。");
+        progressDialog.setMessage("请稍后...");
         progressDialog.setCancelable(false);
         progressDialog.show();
     }

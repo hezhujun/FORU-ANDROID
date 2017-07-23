@@ -8,12 +8,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
 import com.wingsglory.foru_android.R;
-import com.wingsglory.foru_android.model.TaskDTO;
+import com.wingsglory.foru_android.model.Task;
+import com.wingsglory.foru_android.model.TaskContent;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by hezhujun on 2017/7/2.
@@ -22,11 +21,11 @@ import java.util.zip.Inflater;
 public class TaskExpandableListAdapter extends BaseExpandableListAdapter {
 
     private String[] group = {"我发布的", "我接受的"};
-    private List<List<TaskDTO>> child;
+    private List<List<Task>> child;
 
     private Context context;
 
-    public TaskExpandableListAdapter(Context context, List<TaskDTO> taskMyPublished, List<TaskDTO> taskMyAccepted) {
+    public TaskExpandableListAdapter(Context context, List<Task> taskMyPublished, List<Task> taskMyAccepted) {
         child = new ArrayList<>();
         child.add(taskMyPublished);
         child.add(taskMyAccepted);
@@ -106,12 +105,12 @@ public class TaskExpandableListAdapter extends BaseExpandableListAdapter {
             view = convertView;
             holder = (ChildViewHolder) view.getTag();
         }
-
-        TaskDTO task = child.get(groupPosition).get(childPosition);
-        holder.taskTitle.setText(task.getTaskContent().getTitle());
-        holder.taskContent.setText(task.getTaskContent().getContent());
-        holder.taskReward.setText("赏" + task.getTaskContent().getReward() + "元");
-        holder.taskState.setText(task.getTask().getState());
+        Task task = child.get(groupPosition).get(childPosition);
+        TaskContent content = task.getContent();
+        holder.taskTitle.setText(content.getTitle());
+        holder.taskContent.setText(content.getContent());
+        holder.taskReward.setText("赏" + content.getReward().doubleValue() + "元");
+        holder.taskState.setText(task.getState());
         return view;
     }
 

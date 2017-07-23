@@ -12,7 +12,6 @@ import android.view.MenuItem;
 
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
-import com.wingsglory.foru_android.model.TaskDTO;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.view.fragment.AddFragment;
 import com.wingsglory.foru_android.view.fragment.CommunityFragment;
@@ -35,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private MeFragment meFragment;
 
     private User user;
-    private Map<Integer, TaskDTO> taskPublishedBuffer = new HashMap<>();
-    private Map<Integer, TaskDTO> taskMyPublishedBuffer = new HashMap<>();
-    private Map<Integer, TaskDTO> taskMyAcceptedBuffer = new HashMap<>();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -77,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.task_fragment:
                 if (taskFragment == null) {
-                    taskFragment = TaskFragment.newInstance(user, taskPublishedBuffer);
+                    taskFragment = TaskFragment.newInstance();
                     fragmentTransaction.add(R.id.content, taskFragment);
                 } else {
                     fragmentTransaction.show(taskFragment);
@@ -86,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.task_detail_fragment:
                 if (taskDetailFragment == null) {
-                    taskDetailFragment = TaskDetailFragment.newInstance(taskMyPublishedBuffer, taskMyAcceptedBuffer, user);
+                    taskDetailFragment = TaskDetailFragment.newInstance();
                     fragmentTransaction.add(R.id.content, taskDetailFragment);
                 } else {
                     fragmentTransaction.show(taskDetailFragment);
@@ -94,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.help_fragment:
                 if (addFragment == null) {
-                    addFragment = AddFragment.newInstance(user, taskPublishedBuffer, this);
+                    addFragment = AddFragment.newInstance();
                     fragmentTransaction.add(R.id.content, addFragment);
                 } else {
                     fragmentTransaction.show(addFragment);
@@ -137,13 +133,5 @@ public class MainActivity extends AppCompatActivity {
         if(meFragment != null){
             transaction.hide(meFragment);
         }
-    }
-
-    public void updateTaskPublished() {
-        taskFragment.updateMapTask();
-    }
-
-    public void updateTaskMyPublished() {
-
     }
 }
