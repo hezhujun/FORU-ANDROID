@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.add(R.id.content, taskDetailFragment);
                 } else {
                     fragmentTransaction.show(taskDetailFragment);
+                    taskDetailFragment.show();
                 }
                 break;
             case R.id.help_fragment:
@@ -123,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(taskDetailFragment != null){
             transaction.hide(taskDetailFragment);
+            taskDetailFragment.hide();
         }
         if(addFragment != null){
             transaction.hide(addFragment);

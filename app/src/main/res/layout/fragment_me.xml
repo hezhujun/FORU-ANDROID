@@ -60,6 +60,7 @@
             android:paddingRight="5dp">
 
             <LinearLayout
+                android:id="@+id/my_info"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="5dp"
@@ -131,6 +132,7 @@
             android:paddingRight="5dp">
 
             <LinearLayout
+                android:id="@+id/product_idea"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="5dp"
@@ -163,6 +165,7 @@
                 android:background="@color/line"></LinearLayout>
 
             <LinearLayout
+                android:id="@+id/product_update"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="5dp"
@@ -195,6 +198,7 @@
                 android:background="@color/line"></LinearLayout>
 
             <LinearLayout
+                android:id="@+id/product_about"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginBottom="5dp"
@@ -231,18 +235,19 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@color/blue">
 
             <TextView
                 android:id="@+id/logout"
-                android:textSize="20sp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text="退出登录"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="20sp" />
 
         </LinearLayout>
 

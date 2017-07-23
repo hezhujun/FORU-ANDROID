@@ -184,53 +184,90 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("注意");
         switch (v.getId()) {
             case R.id.delete_task:
-                new OperationAsyncTask("/task/remove", "删除成功",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).execute();
+                builder.setMessage("是否删除此任务？");
+                builder.setPositiveButton("删除", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new OperationAsyncTask("/task/remove", "删除成功",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        finish();
+                                    }
+                                }).execute();
+                        progressDialog.setMessage("请稍后...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                    }
+                });
                 break;
             case R.id.accept_task:
-                new OperationAsyncTask("/task/accept", "接受任务成功",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                task.setRecipientId(user.getId());
-                                task.setState(Task.TASK_STATE_WAIT_FOR_COMPLETE);
-                                initData();
-                            }
-                        }).execute();
+                builder.setMessage("是否接受此任务？");
+                builder.setPositiveButton("接受", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new OperationAsyncTask("/task/accept", "接受任务成功",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        task.setRecipientId(user.getId());
+                                        task.setState(Task.TASK_STATE_WAIT_FOR_COMPLETE);
+                                        initData();
+                                    }
+                                }).execute();
+                        progressDialog.setMessage("请稍后...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                    }
+                });
                 break;
             case R.id.complete_task:
-                new OperationAsyncTask("/task/complete", "完成",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                task.setState(Task.TASK_STATE_WAIT_FOR_CONFIRM);
-                                initData();
-                            }
-                        }).execute();
+                builder.setMessage("是否完成任务？");
+                builder.setPositiveButton("完成", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new OperationAsyncTask("/task/complete", "完成",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        task.setState(Task.TASK_STATE_WAIT_FOR_CONFIRM);
+                                        initData();
+                                    }
+                                }).execute();
+                        progressDialog.setMessage("请稍后...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                    }
+                });
                 break;
             case R.id.confirm_task:
-                new OperationAsyncTask("/task/confirm", "完成",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                task.setState(Task.TASK_STATE_COMPLETE);
-                                initData();
-                            }
-                        }).execute();
+                builder.setMessage("是否确认完成任务？");
+                builder.setPositiveButton("确认完成", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new OperationAsyncTask("/task/confirm", "完成",
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        task.setState(Task.TASK_STATE_COMPLETE);
+                                        initData();
+                                    }
+                                }).execute();
+                        progressDialog.setMessage("请稍后...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                    }
+                });
                 break;
             default:
                 break;
         }
-        progressDialog.setMessage("请稍后...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        builder.setNegativeButton("取消", null);
+        builder.show();
     }
 
     class OperationAsyncTask extends AsyncTask<Void, Void, JSONObject> {

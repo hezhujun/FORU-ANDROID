@@ -10,11 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ExpandableListView
-            android:id="@+id/task_detail_list_view"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </ExpandableListView>
-
+            android:layout_height="wrap_content">
+            <ExpandableListView
+                android:id="@+id/task_detail_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </ExpandableListView>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </FrameLayout>

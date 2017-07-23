@@ -4,9 +4,11 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
@@ -42,7 +44,10 @@ import okhttp3.Response;
  * Created by hezhujun on 2017/6/30.
  */
 
-public class TaskDetailFragment extends Fragment implements AdapterView.OnItemClickListener, AdapterView.OnItemSelectedListener, ExpandableListView.OnChildClickListener {
+public class TaskDetailFragment extends Fragment
+        implements ExpandableListView.OnChildClickListener,
+        AbsListView.OnScrollListener,
+        SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "TaskDetailFragment";
 
     private List<Task> myTaskPublishedList = new ArrayList<>();
@@ -57,6 +62,7 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
     private ExpandableListView taskDetailListView;
     private TaskExpandableListAdapter adapter;
     private View view;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public static TaskDetailFragment newInstance() {
         TaskDetailFragment fragment = new TaskDetailFragment();
@@ -85,34 +91,24 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
     }
 
     private void initView() {
-        taskDetailListView = (ExpandableListView) view.findViewById(R.id.task_detail_list_view);
-        taskDetailListView.setOnItemClickListener(this);
-        taskDetailListView.setOnItemSelectedListener(this);
+        taskDetailListView =
+                (ExpandableListView) view.findViewById(R.id.task_detail_list_view);
         taskDetailListView.setOnChildClickListener(this);
         taskDetailListView.setAdapter(adapter);
+        taskDetailListView.setOnScrollListener(this);
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh_view);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_task_detail, container, false);
         initView();
         return view;
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override
@@ -128,6 +124,40 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
             TaskDetailActivity.actionStart(getActivity(), task);
         }
         return true;
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView view, int scrollState) {
+        // 滑动到底部时加载更多的任务信息
+        if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+            LogUtil.d(TAG, "-----------------滑动底部位置：" + view.getLastVisiblePosition());
+            int lastPublishedTaskPosition = myTaskPublishedList.size();
+            int lastAcceptedTaskPosition = lastPublishedTaskPosition + 1 +
+                    myTaskAcceptedList.size();
+            if (view.getLastVisiblePosition() == lastPublishedTaskPosition) {
+                if (publishedPageBean.getTotalRows() != myTaskPublishedList.size()) {
+                    new HistoryTaskListAsyncTask(user.getId(), "/task/history/published",
+                            publishedPageBean).execute();
+                }
+            }
+            if (view.getLastVisiblePosition() == lastAcceptedTaskPosition) {
+                if (acceptedPageBean.getTotalRows() != myTaskAcceptedList.size()) {
+                    new HistoryTaskListAsyncTask(user.getId(), "/task/history/accepted",
+                            acceptedPageBean).execute();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                         int totalItemCount) {
+
+    }
+
+    @Override
+    public void onRefresh() {
+        show();
     }
 
     class HistoryTaskListAsyncTask extends AsyncTask<Void, Void, JSONObject> {
@@ -182,6 +212,7 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
                     e.printStackTrace();
                 }
             }
+            swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -215,6 +246,27 @@ public class TaskDetailFragment extends Fragment implements AdapterView.OnItemCl
             }
             return null;
         }
+    }
+
+    public void hide() {
+
+    }
+
+    /**
+     * 重新进入时刷新数据
+     */
+    public void show() {
+        publishedPageBean.setPage(1);
+        publishedPageBean.setTotalRows(Integer.MAX_VALUE);
+        publishedPageBean.setBeans(myTaskPublishedList);
+        acceptedPageBean.setPage(1);
+        publishedPageBean.setTotalRows(Integer.MAX_VALUE);
+        acceptedPageBean.setBeans(myTaskAcceptedList);
+
+        new HistoryTaskListAsyncTask(user.getId(), "/task/history/published",
+                publishedPageBean).execute();
+        new HistoryTaskListAsyncTask(user.getId(), "/task/history/accepted",
+                acceptedPageBean).execute();
     }
 
 }
