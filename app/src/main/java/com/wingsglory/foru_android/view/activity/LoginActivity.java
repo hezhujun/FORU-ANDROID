@@ -2,6 +2,7 @@ package com.wingsglory.foru_android.view.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -44,6 +45,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button signUpView;
 
     private ProgressDialog progressDialog;
+
+    public static void actionStart(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

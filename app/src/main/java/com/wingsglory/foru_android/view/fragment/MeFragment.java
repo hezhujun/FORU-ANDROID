@@ -15,6 +15,7 @@ import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.view.activity.AddressActivity;
+import com.wingsglory.foru_android.view.activity.LoginActivity;
 
 /**
  * Created by hezhujun on 2017/6/30.
@@ -101,6 +102,8 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 noImplement();
                 break;
             case R.id.logout:
+                LoginActivity.actionStart(getActivity());
+                getActivity().finish();
                 break;
             default:
                 break;
