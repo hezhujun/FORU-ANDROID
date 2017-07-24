@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
@@ -49,7 +50,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_me, container, false);
+        view = inflater.inflate(R.layout.fragment_me, container, false);
         initView();
         return view;
     }
@@ -81,7 +82,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
         user = app.getUser();
         if (user.getProtraitUrl() != null && !"".equals(user.getProtraitUrl())) {
             Glide.with(this).load(user.getProtraitUrl())
-                    .placeholder(R.drawable.person01)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(userImageView);
         }
         usernameView.setText(user.getUsername());

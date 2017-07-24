@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -102,7 +103,11 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         TaskContent content = task.getContent();
         User publisher = task.getPublisher();
-        Glide.with(this).load(publisher.getProtraitUrl()).into(userImageView);
+        if (publisher.getProtraitUrl() != null && !"".equals(publisher.getProtraitUrl())) {
+            Glide.with(this).load(publisher.getProtraitUrl())
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(userImageView);
+        }
         usernameView.setText(publisher.getUsername());
         taskTitleView.setText(content.getTitle());
         taskContentView.setText(content.getContent());

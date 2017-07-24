@@ -24,6 +24,7 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapUtils;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
@@ -31,6 +32,7 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -52,6 +54,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -148,7 +151,9 @@ public class TaskFragment extends Fragment
         myLocationStyle = new MyLocationStyle();
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
         myLocationStyle.showMyLocation(true);
-        myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.my_local_image));
+        myLocationStyle.myLocationIcon(
+                BitmapDescriptorFactory.fromResource(R.drawable.my_location));
+        myLocationStyle.anchor(0.5f, 1f);
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
         aMap.getUiSettings().setZoomControlsEnabled(false);
         aMap.setMyLocationStyle(myLocationStyle);
@@ -195,13 +200,7 @@ public class TaskFragment extends Fragment
      * 显示任务在地图中
      */
     private void listTask() {
-        // 删除之前是marker
-//        for (Marker marker :
-//                markerList) {
-//            marker.setVisible(false);
-//            marker.remove();
-//            marker.destroy();
-//        }
+        List<Marker> newMarkerList = new ArrayList<>();
         for (Map.Entry<Integer, Task> entry :
                 app.getTaskBuffer().entrySet()) {
             Task task = entry.getValue();
@@ -217,15 +216,39 @@ public class TaskFragment extends Fragment
                     TaskContent content = task.getContent();
                     LatLng position = new LatLng(content.getLatitude().doubleValue(),
                             content.getLongitude().doubleValue());
-                    Marker marker = aMap.addMarker(
-                            new MarkerOptions()
-                                    .position(position)
-                                    .title(String.valueOf(task.getId()))
-                                    .icon(BitmapDescriptorFactory
-                                            .fromResource(R.drawable.marker1)));
-                    marker.setInfoWindowEnable(false);
-                    markerList.add(marker);
+                    // 如果已经创建了对应的marker，则不重新创建
+                    // 删了再创建marker的效果不好，而且选中的marker的颜色会变回蓝色。
+                    boolean isShowed = false;
+                    for (Marker m :
+                            markerList) {
+                        if (task.getId().equals(Integer.parseInt(m.getTitle()))) {
+                            m.setPosition(position);
+                            isShowed = true;
+                            newMarkerList.add(m);
+                        }
+                    }
+                    if (!isShowed) {
+                        Marker marker = aMap.addMarker(
+                                new MarkerOptions()
+                                        .position(position)
+                                        .title(String.valueOf(task.getId()))
+                                        .icon(BitmapDescriptorFactory
+                                                .fromResource(R.drawable.marker_blue)));
+                        marker.setAnchor(0.5f, 1f);
+                        marker.setInfoWindowEnable(false);
+                        newMarkerList.add(marker);
+                        markerList.add(marker);
+                    }
                 }
+            }
+        }
+        // 删除不用的marker
+        Iterator<Marker> iterator = markerList.iterator();
+        while (iterator.hasNext()) {
+            Marker m = iterator.next();
+            if (!newMarkerList.contains(m)) {
+                // 新的marker中没有包含，则删除
+                iterator.remove();
             }
         }
     }
@@ -307,6 +330,11 @@ public class TaskFragment extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        for (Marker m :
+                markerList) {
+            m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue));
+        }
+        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red));
         taskMapInfoView.setVisibility(View.VISIBLE);
         Integer taskId = Integer.parseInt(marker.getTitle());
         Task task = taskBuffer.get(taskId);
@@ -319,9 +347,12 @@ public class TaskFragment extends Fragment
             }
             User publisher = task.getPublisher();
             if (publisher != null) {
-                Glide.with(this).load(publisher.getProtraitUrl())
-                        .placeholder(R.drawable.person01)
-                        .into(userImageView);
+                if (publisher.getProtraitUrl() != null
+                        && !"".equals(publisher.getProtraitUrl())) {
+                    Glide.with(this).load(publisher.getProtraitUrl())
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(userImageView);
+                }
                 usernameView.setText(publisher.getUsername());
                 float distance = AMapUtils.calculateLineDistance(myLocation,
                         new LatLng(content.getLatitude().doubleValue(),
