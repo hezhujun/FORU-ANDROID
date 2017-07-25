@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.wingsglory.foru_android.App;
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private AddFragment addFragment;
     private CommunityFragment communityFragment;
     private MeFragment meFragment;
+    private ActionBar mActionBar;
 
     private User user;
 
@@ -59,6 +62,10 @@ public class MainActivity extends AppCompatActivity {
         app = (App) getApplication();
         user  = app.getUser();
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mActionBar = getSupportActionBar();
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -79,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.show(taskFragment);
                     taskFragment.show();
                 }
+                mActionBar.setTitle("周边任务");
                 break;
             case R.id.task_detail_fragment:
                 if (taskDetailFragment == null) {
@@ -88,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     fragmentTransaction.show(taskDetailFragment);
                     taskDetailFragment.show();
                 }
+                mActionBar.setTitle("我的任务");
                 break;
             case R.id.help_fragment:
                 if (addFragment == null) {
@@ -96,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     fragmentTransaction.show(addFragment);
                 }
+                mActionBar.setTitle("发布任务");
                 break;
             case R.id.community_fragment:
                 if (communityFragment == null) {
@@ -104,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     fragmentTransaction.show(communityFragment);
                 }
+                mActionBar.setTitle("交流列表");
                 break;
             case R.id.me_fragment:
                 if (meFragment == null) {
@@ -112,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     fragmentTransaction.show(meFragment);
                 }
+                mActionBar.setTitle("个人主页");
                 break;
         }
         fragmentTransaction.commit();

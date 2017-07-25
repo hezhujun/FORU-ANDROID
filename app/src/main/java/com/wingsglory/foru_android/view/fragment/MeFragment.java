@@ -17,6 +17,7 @@ import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.view.activity.AddressActivity;
 import com.wingsglory.foru_android.view.activity.LoginActivity;
+import com.wingsglory.foru_android.view.activity.MyInfoActivity;
 
 /**
  * Created by hezhujun on 2017/6/30.
@@ -92,7 +93,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.my_info:
-                noImplement();
+                MyInfoActivity.actionStart(getActivity());
                 break;
             case R.id.my_address:
                 AddressActivity.actionStart(getActivity());
