@@ -26,6 +26,8 @@
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:gravity="center|left"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
                     android:text="我要" />
 
                 <EditText
@@ -33,6 +35,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textSize="18sp"
                     android:hint="我需要别人帮助我什么" />
             </LinearLayout>
 
@@ -49,6 +52,8 @@
                     android:layout_width="60dp"
                     android:layout_height="50dp"
                     android:gravity="center|left"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
                     android:text="描述" />
 
                 <EditText
@@ -57,6 +62,7 @@
                     android:layout_height="100dp"
                     android:layout_weight="1"
                     android:hint="说一说具体的信息，清楚明确的描述才容易获得帮助"
+                    android:textSize="18sp"
                     android:inputType="textMultiLine" />
 
             </LinearLayout>
@@ -74,6 +80,8 @@
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
                     android:gravity="center|left"
+                    android:textSize="18sp"
+                    android:textColor="@color/black"
                     android:text="赏金" />
 
                 <EditText
@@ -81,6 +89,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:textSize="18sp"
                     android:hint="我愿意支付报酬"
                     android:inputType="numberDecimal"
                     android:text="0.00" />
@@ -101,6 +110,8 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
+                android:textSize="18sp"
+                android:textColor="@color/black"
                 android:text="地址" />
 
             <TextView
@@ -109,6 +120,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center|right"
+                android:textSize="18sp"
                 android:text="选择地址" />
 
             <ImageView
@@ -133,6 +145,8 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
+                android:textSize="15sp"
+                android:textColor="@color/black"
                 android:text="收件地址" />
 
             <TextView
@@ -141,6 +155,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center|right"
+                android:textSize="18sp"
                 android:text="选择收件地址" />
 
             <ImageView
@@ -165,7 +180,9 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
-                android:text="有效期至" />
+                android:text="有效期至"
+                android:textSize="15sp"
+                android:textColor="@color/black"/>
 
             <TextView
                 android:id="@+id/task_timeout"
@@ -173,6 +190,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center|right"
+                android:textSize="18sp"
                 android:text="为任务设置一个截止时间" />
 
             <ImageView
@@ -193,7 +211,7 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="end"
-            android:background="@color/blue">
+            android:background="@color/blue1">
 
             <TextView
                 android:textSize="20sp"

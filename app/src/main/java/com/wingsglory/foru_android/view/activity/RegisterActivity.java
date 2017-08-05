@@ -70,14 +70,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         signUpView = (Button) findViewById(R.id.register_btn);
         signUpView.setOnClickListener(this);
 
-        View view = findViewById(R.id.back);
-        view.setOnClickListener(new View.OnClickListener() {
+        View goBackButton = findViewById(R.id.back);
+        goBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        view.setOnClickListener(this);
     }
 
     @Override

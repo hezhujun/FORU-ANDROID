@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:background="@drawable/background"
+            android:background="@color/white"
             android:orientation="horizontal">
 
             <RelativeLayout
@@ -38,7 +38,7 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:background="#10000000"
+                    android:background="@color/white"
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:text="用户名"
-                    android:textColor="@color/white"
+                    android:textColor="@color/black"
                     android:textSize="30sp" />
 
             </RelativeLayout>
@@ -70,9 +70,14 @@
                 android:layout_marginTop="5dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_person_black_24dp" />
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -80,8 +85,8 @@
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="我的信息"
-                    android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:textColor="#4d4d4d"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -103,18 +108,22 @@
                 android:layout_marginTop="5dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_location_on_black_24dp" />
-
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="我的地址"
-                    android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:textColor="#4d4d4d"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -142,18 +151,22 @@
                 android:layout_marginTop="5dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_mode_edit_black_24dp" />
-
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="产品意见"
-                    android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:textColor="#4d4d4d"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -175,18 +188,22 @@
                 android:layout_marginTop="5dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_autorenew_black_24dp" />
-
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="版本检测"
-                    android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:textColor="#4d4d4d"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -208,18 +225,22 @@
                 android:layout_marginTop="5dp">
 
                 <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_priority_high_black_24dp" />
-
+                <LinearLayout
+                    android:layout_width="10dp"
+                    android:layout_height="wrap_content">
+                </LinearLayout>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="关于"
-                    android:textColor="@color/black"
-                    android:textSize="25sp" />
+                    android:textColor="#4d4d4d"
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="40dp"
@@ -241,10 +262,9 @@
             android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@color/blue">
+            android:background="@color/blue1">
 
             <TextView
-                android:id="@+id/logout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"

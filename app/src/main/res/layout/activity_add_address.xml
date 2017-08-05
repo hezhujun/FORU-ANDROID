@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/blue1"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -20,6 +20,8 @@
         android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="35dp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
         android:text="收件人"
         android:gravity="center|left" />
 
@@ -36,12 +38,15 @@
             android:layout_height="50dp">
             <TextView
                 android:text="姓名："
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 android:gravity="center|left"
                 android:layout_width="50dp"
                 android:layout_height="match_parent" />
             <EditText
                 android:id="@+id/addressee"
                 android:hint="请输入收货人的姓名"
+                android:textSize="16sp"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
@@ -59,6 +64,8 @@
             android:layout_height="50dp">
             <TextView
                 android:text="手机："
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 android:gravity="center|left"
                 android:layout_width="50dp"
                 android:layout_height="match_parent" />
@@ -68,6 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:textSize="16sp"
                 android:hint="请输入收货手机号码"
                 android:inputType="phone"
                 />
@@ -79,6 +87,8 @@
         android:layout_height="35dp"
         android:layout_marginLeft="5dp"
         android:gravity="center|left"
+        android:textColor="@color/black"
+        android:textSize="18sp"
         android:text="收货地址" />
 
     <LinearLayout
@@ -99,14 +109,17 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:gravity="center|left"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 android:text="地址：" />
 
             <TextView
                 android:id="@+id/address"
-                android:gravity="center|left"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center|left"
+                android:textSize="16sp"
                 android:text="点击选择" />
 
             <ImageView
@@ -128,9 +141,12 @@
             android:layout_height="50dp">
 
             <TextView
+                android:id="@+id/textView"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
+                android:textColor="@color/black"
+                android:textSize="16sp"
                 android:text="补充：" />
 
             <EditText
@@ -138,6 +154,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:textSize="16sp"
                 android:hint="补充说明" />
         </LinearLayout>
     </LinearLayout>
@@ -151,18 +168,19 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
         android:layout_height="50dp"
-        android:background="@color/blue"
+        android:layout_marginTop="10dp"
+        android:background="@color/blue1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/submit"
-            android:textSize="20sp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="+ 添加" />
+            android:text="+ 添加"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

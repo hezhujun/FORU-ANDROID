@@ -12,7 +12,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/blue1"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
@@ -55,7 +55,9 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="账号"
-                    android:textSize="20sp" />
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                     />
 
                 <TextView
                     android:id="@+id/user_name"
@@ -82,6 +84,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="邮箱"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <TextView
@@ -121,6 +124,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="手机号码"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <TextView
@@ -148,6 +152,7 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="真实姓名"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <TextView
@@ -183,9 +188,11 @@
                 android:layout_marginTop="10dp">
 
                 <TextView
+                    android:id="@+id/textView2"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="身份证号"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <TextView

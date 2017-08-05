@@ -5,43 +5,71 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/register_bg">
+    android:background="@color/white">
 
     <ScrollView
         android:id="@+id/register_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginLeft="5dp"
-                android:orientation="horizontal">
+                android:layout_height="50dp"
+                android:weightSum="1">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:minWidth="50dp"
+                    android:background="#f1f1f1"
+                    android:weightSum="1">
 
-                <ImageView
+                    <ImageView
                     android:id="@+id/back"
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@drawable/left_arrow"
-                    android:layout_marginLeft="30dp"
-                    />
-
+                    android:layout_gravity=""
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="14dp"
+                    android:src="@drawable/left_arrow" />
+                </LinearLayout>
                 <TextView
+                    android:layout_width="253dp"
+                    android:layout_height="match_parent"
+                    android:background="#f1f1f1"
+                    android:gravity="center|center_horizontal"
+                    android:text="注册"
+                    android:textSize="25dp"
+                    android:layout_weight="0.92" />
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="90dp"
-                    android:textColor="@color/white"
-                    android:text="注册"/>
-
+                    android:layout_height="50dp"
+                    android:background="#f1f1f1"
+                    android:minWidth="50dp"
+                    android:weightSum="1">
+                </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#949494"
+                android:minHeight="0.01dp"
+                android:weightSum="1"></LinearLayout>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="match_parent"
+                android:layout_height="51dp"
+                android:gravity="center|center_horizontal"
+                android:text="请输入个人信息"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="25dp" />
 
             <RelativeLayout
                 android:layout_width="300dp"
@@ -187,37 +215,40 @@
                     android:id="@+id/send_verification_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="发送"
                     android:layout_alignBaseline="@+id/verificationcodetext"
                     android:layout_alignBottom="@+id/verificationcodetext"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:text="发送" />
 
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:orientation="vertical"
-                android:layout_margin="30dp"
-                android:layout_height="wrap_content">
-
-
-                <Button
-                    android:id="@+id/register_btn"
-                    android:layout_below="@+id/profile_lv2"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:text="注册并登录"
-                    android:layout_marginTop="8dp"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/register_btn_bg"/>
+                android:layout_height="wrap_content"
+                android:minHeight="10dp"
+                android:weightSum="1">
 
             </LinearLayout>
+
+
+            <Button
+                android:id="@+id/register_btn"
+                style="@android:style/Widget.DeviceDefault.Button.Toggle"
+                android:layout_width="111dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="21dp"
+                android:background="@drawable/boder"
+                android:text="注册并登录"
+                android:textAlignment="center"
+                android:textColor="@android:color/holo_blue_light"
+                android:textSize="18sp" />
         </LinearLayout>
     </ScrollView>
-
 
 
 </LinearLayout>

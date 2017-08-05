@@ -40,6 +40,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:padding="5dp"
+                    android:textColor="#414141"
                     android:text="username"
                     android:textSize="30sp" />
 
@@ -61,7 +62,8 @@
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:text="标题"
-                    android:textSize="20sp" />
+                    android:textColor="@color/black"
+                    android:textSize="25sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -75,20 +77,22 @@
                         android:paddingBottom="5dp"
                         android:paddingTop="5dp"
                         android:text="赏10元"
-                        android:textSize="17sp" />
+                        android:textColor="@color/red"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/task_timeout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="23dp"
+                        android:layout_marginStart="23dp"
                         android:layout_toEndOf="@+id/task_reward"
                         android:layout_toRightOf="@+id/task_reward"
                         android:paddingBottom="5dp"
                         android:paddingTop="5dp"
                         android:text="悬赏还剩2天"
-                        android:textSize="17sp" />
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/task_state"
@@ -138,6 +142,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center|left"
                     android:text="地点"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <TextView
@@ -146,7 +151,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="湖南省长沙市天心区文源街道韶山南路68号中南大学铁道学院"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
             </LinearLayout>
 
@@ -164,6 +169,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center|left"
                     android:text="收货\n信息"
+                    android:textColor="@color/black"
                     android:textSize="20sp" />
 
                 <LinearLayout
@@ -180,17 +186,19 @@
 
                         <TextView
                             android:id="@+id/addressee"
-                            android:layout_width="100dp"
+                            android:layout_width="76dp"
                             android:layout_height="wrap_content"
                             android:text="何柱君"
-                            android:textSize="20sp" />
+                            android:textColor="#414141"
+                            android:textSize="18sp" />
 
                         <TextView
                             android:id="@+id/phone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="18932442453"
-                            android:textSize="20sp" />
+                            android:textColor="#414141"
+                            android:textSize="15sp" />
                     </LinearLayout>
 
                     <TextView
@@ -198,7 +206,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="湖南省长沙市天心区文源街道韶山南路68号中南大学铁道学院"
-                        android:textSize="20sp" />
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
