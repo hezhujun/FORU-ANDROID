@@ -193,7 +193,6 @@ public class TaskFragment extends Fragment
         new TaskListAsyncTask(user.getId(),
                 center.latitude, center.longitude).execute();
         listTask();
-        LogUtil.d(TAG, "----------------------------------------onResume");
     }
 
     /**
@@ -225,6 +224,7 @@ public class TaskFragment extends Fragment
                             m.setPosition(position);
                             isShowed = true;
                             newMarkerList.add(m);
+                            break;
                         }
                     }
                     if (!isShowed) {
@@ -330,12 +330,20 @@ public class TaskFragment extends Fragment
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (!markerList.contains(marker)) {
+            // 我的位置的marker
+            // 不需要处理
+            return true;
+        }
+        // 改变marker的颜色
         for (Marker m :
                 markerList) {
             m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_blue));
         }
         marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.marker_red));
+        // 显示任务信息
         taskMapInfoView.setVisibility(View.VISIBLE);
+        System.out.println(marker.getTitle());
         Integer taskId = Integer.parseInt(marker.getTitle());
         Task task = taskBuffer.get(taskId);
         if (task != null) {
