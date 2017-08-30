@@ -54,7 +54,11 @@
         <activity android:name=".view.activity.TaskDetailActivity" />
         <activity android:name=".view.activity.MyInfoActivity" />
         <activity android:name=".view.activity.UpdateEmailActivity" />
-        <activity android:name=".view.activity.UpdateRealInfoActivity"></activity>
+        <activity android:name=".view.activity.UpdateRealInfoActivity" />
+
+        <service android:name=".view.service.ForuService"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 
 </manifest>

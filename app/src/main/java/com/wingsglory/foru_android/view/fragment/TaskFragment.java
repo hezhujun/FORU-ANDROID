@@ -2,11 +2,16 @@ package com.wingsglory.foru_android.view.fragment;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -47,6 +52,7 @@ import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.AMapUtil;
 import com.wingsglory.foru_android.util.LogUtil;
 import com.wingsglory.foru_android.view.activity.TaskDetailActivity;
+import com.wingsglory.foru_android.view.service.ForuService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -96,6 +102,19 @@ public class TaskFragment extends Fragment
     private Task currentSelectedTask;
     private List<Marker> markerList = new ArrayList<>();
 
+    private ForuService.ServiceController serviceController;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            serviceController = (ForuService.ServiceController) service;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            serviceController = null;
+        }
+    };
+
     public static TaskFragment newInstance() {
         TaskFragment taskFragment = new TaskFragment();
         return taskFragment;
@@ -117,6 +136,9 @@ public class TaskFragment extends Fragment
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_PERMISSION);
         }
+
+        Intent intent = new Intent(getActivity(), ForuService.class);
+        getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -149,6 +171,7 @@ public class TaskFragment extends Fragment
         mMapView.onCreate(savedInstanceState);
         aMap = mMapView.getMap();
         myLocationStyle = new MyLocationStyle();
+        myLocationStyle.interval(3000);
         myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
         myLocationStyle.showMyLocation(true);
         myLocationStyle.myLocationIcon(
@@ -265,6 +288,7 @@ public class TaskFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         mMapView.onDestroy();
+        getActivity().unbindService(serviceConnection);
     }
 
     @Override
@@ -278,7 +302,15 @@ public class TaskFragment extends Fragment
             if (bundle != null) {
                 int errorCode = bundle.getInt(MyLocationStyle.ERROR_CODE);
                 if (errorCode == 0) {
-                    myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
+                    if (newLocation.equals(myLocation)) {
+                        myLocation = newLocation;
+                        if (serviceController != null) {
+                            serviceController.updateUserPosition(
+                                    String.valueOf(location.getLatitude()),
+                                    String.valueOf(location.getLongitude()));
+                        }
+                    }
                     isGetMyLocation = true;
                 }
                 String errorInfo = bundle.getString(MyLocationStyle.ERROR_INFO);
@@ -323,7 +355,7 @@ public class TaskFragment extends Fragment
     @Override
     public void onTouch(MotionEvent motionEvent) {
         if (myLocationStyle.getMyLocationType() == MyLocationStyle.LOCATION_TYPE_FOLLOW) {
-            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_SHOW);
+            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
             aMap.setMyLocationStyle(myLocationStyle);
         }
     }
@@ -496,7 +528,7 @@ public class TaskFragment extends Fragment
 
     public void hide() {
         if (myLocationStyle.getMyLocationType() == MyLocationStyle.LOCATION_TYPE_FOLLOW) {
-            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_SHOW);
+            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
             aMap.setMyLocationStyle(myLocationStyle);
         }
         mMapView.onPause();
