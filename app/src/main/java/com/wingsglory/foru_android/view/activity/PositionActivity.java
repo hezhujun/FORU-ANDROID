@@ -105,6 +105,10 @@ public class PositionActivity extends AppCompatActivity implements AdapterView.O
     private Spinner spinnerCity;
     private Spinner spinnerDistrict;
 
+    private boolean isSpinnerProvinceInit = false;
+    private boolean isSpinnerCityInitInit = false;
+    private boolean isSpinnerDistrictInit = false;
+
     private boolean isShowPosition;
     private LatLng showPosition;
     private int myLocationUpdateCount = 0; // 我的位置更新次数
@@ -132,11 +136,8 @@ public class PositionActivity extends AppCompatActivity implements AdapterView.O
 
         // 请求获取地理位置权限
         PackageManager pm = getPackageManager();
-        // Here, thisActivity is the current activity
         if (pm.checkPermission(Manifest.permission.ACCESS_COARSE_LOCATION, "com.wingsglory.foru_android")
                 != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
                     Toast.makeText(this, "需要开启定位权限", Toast.LENGTH_SHORT).show();
@@ -247,16 +248,29 @@ public class PositionActivity extends AppCompatActivity implements AdapterView.O
         DistrictItem districtItem = null;
         switch (parent.getId()) {
             case R.id.province_spinner:
-                districtItem = provinceList.get(position);
-                selectedLevel = PROVINCE;
+//                // 避免初始化导致地图中心位置转移
+//                if (isSpinnerProvinceInit) {
+                    districtItem = provinceList.get(position);
+                    selectedLevel = PROVINCE;
+//                } else {
+//                    isSpinnerProvinceInit = true;
+//                }
                 break;
             case R.id.city_spinner:
-                selectedLevel = CITY;
-                districtItem = cityList.get(position);
+//                if (isSpinnerCityInitInit) {
+                    selectedLevel = CITY;
+                    districtItem = cityList.get(position);
+//                } else {
+//                    isSpinnerCityInitInit = true;
+//                }
                 break;
             case R.id.district_spinner:
-                selectedLevel = DISTRICT;
-                districtItem = districtList.get(position);
+//                if (isSpinnerDistrictInit) {
+                    selectedLevel = DISTRICT;
+                    districtItem = districtList.get(position);
+//                } else {
+//                    isSpinnerDistrictInit = true;
+//                }
                 break;
             default:
                 break;
