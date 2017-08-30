@@ -8,6 +8,8 @@ import com.wingsglory.foru_android.model.User;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.jpush.android.api.JPushInterface;
+
 /**
  * Created by hezhujun on 2017/6/28.
  */
@@ -38,5 +40,12 @@ public class App extends Application {
 
     public void remove(Integer taskId) {
         taskBuffer.remove(taskId);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
     }
 }
