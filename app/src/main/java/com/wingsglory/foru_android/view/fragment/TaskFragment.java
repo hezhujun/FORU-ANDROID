@@ -488,8 +488,7 @@ public class TaskFragment extends Fragment
             LatLng edge = aMap.getProjection().fromScreenLocation(screenEdge);
             if (edge != null) {
                 int distance = (int) AMapUtils.calculateLineDistance(center, edge);
-                // 最大10公里
-                return distance > 10000 ? 10000 : distance;
+                return distance;
             }
         }
         return 10000;
