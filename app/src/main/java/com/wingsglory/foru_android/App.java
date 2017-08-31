@@ -28,6 +28,10 @@ public class App extends Application {
 
     public void setUser(User user) {
         this.user = user;
+        // 设置JPush的别名
+        JPushInterface.setAlias(this,
+                JPushOperationDefine.SET_ALIAS_SEQUENCE,
+                String.valueOf(user.getId()));
     }
 
     public Map<Integer, Task> getTaskBuffer() {
@@ -47,5 +51,6 @@ public class App extends Application {
         super.onCreate();
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
+        JPushInterface.requestPermission(this);
     }
 }
