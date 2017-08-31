@@ -303,7 +303,7 @@ public class TaskFragment extends Fragment
                 int errorCode = bundle.getInt(MyLocationStyle.ERROR_CODE);
                 if (errorCode == 0) {
                     LatLng newLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                    if (newLocation.equals(myLocation)) {
+                    if (!newLocation.equals(myLocation)) {
                         myLocation = newLocation;
                         if (serviceController != null) {
                             serviceController.updateUserPosition(
