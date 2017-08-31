@@ -35,6 +35,8 @@ public class MyJPushMessageReceiver extends JPushMessageReceiver {
         if (jPushMessage.getSequence() == JPushOperationDefine.SET_ALIAS_SEQUENCE) {
             if (jPushMessage.getErrorCode() == 0) {
                 LogUtil.d(TAG, "设置别名为：" + jPushMessage.getAlias());
+            } else {
+                LogUtil.e(TAG, "设置别名的错误码：" + jPushMessage.getErrorCode());
             }
         }
     }
