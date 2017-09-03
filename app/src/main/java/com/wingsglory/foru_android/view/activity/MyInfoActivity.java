@@ -16,9 +16,8 @@ import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
 
-public class MyInfoActivity extends AppCompatActivity implements View.OnClickListener {
+public class MyInfoActivity extends BaseActivity implements View.OnClickListener {
 
-    private App app;
     private User user;
 
     private ImageView userImageView;

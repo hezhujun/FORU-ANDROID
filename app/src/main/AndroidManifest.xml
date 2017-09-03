@@ -61,7 +61,8 @@
         <activity
             android:name=".view.activity.RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".view.activity.TaskDetailActivity" />
+        <activity android:name=".view.activity.TaskDetailActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".view.activity.MyInfoActivity" />
         <activity android:name=".view.activity.UpdateEmailActivity" />
         <activity android:name=".view.activity.UpdateRealInfoActivity" />
@@ -142,7 +143,7 @@
         <!-- 新的tag/alias接口结果返回需要开发者配置一个自定的广播 -->
         <!-- 该广播需要继承JPush提供的JPushMessageReceiver类, 并如下新增一个 Intent-Filter -->
         <receiver
-            android:name=".view.Receiver.MyJPushMessageReceiver"
+            android:name=".view.receiver.MyJPushMessageReceiver"
             android:enabled="true" >
             <intent-filter>
                 <action android:name="cn.jpush.android.intent.RECEIVE_MESSAGE" />
@@ -150,9 +151,9 @@
             </intent-filter>
         </receiver>
 
-        <!-- User defined. 用户自定义的广播接收器-->
+        <!--&lt;!&ndash; User defined. 用户自定义的广播接收器&ndash;&gt;-->
         <receiver
-            android:name=".view.Receiver.MyReceiver"
+            android:name=".view.receiver.MyReceiver"
             android:enabled="true">
             <intent-filter>
                 <!--Required 用户注册SDK的intent-->

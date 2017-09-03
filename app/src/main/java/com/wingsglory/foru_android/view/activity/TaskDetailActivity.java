@@ -25,6 +25,7 @@ import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.Task;
 import com.wingsglory.foru_android.model.TaskContent;
 import com.wingsglory.foru_android.model.User;
+import com.wingsglory.foru_android.util.UserSaveUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,11 +39,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class TaskDetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class TaskDetailActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "TaskDetailActivity";
     private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-    private App app;
     private User user;
     private Task task;
 
@@ -64,10 +64,10 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
     private TextView confirmTaskButton;
     private ProgressDialog progressDialog;
 
-    public static void actionStart(Context context, Task task) {
+    public static Intent actionStart(Context context, Task task) {
         Intent intent = new Intent(context, TaskDetailActivity.class);
         intent.putExtra("task", task);
-        context.startActivity(intent);
+        return intent;
     }
 
     private void initView() {
@@ -174,6 +174,14 @@ public class TaskDetailActivity extends AppCompatActivity implements View.OnClic
 
         app = (App) getApplication();
         user = app.getUser();
+
+        if (user == null) {
+            // app已经完全退出了
+            finish();
+            LoginActivity.actionStart(this);
+        }
+
+
 
         Intent intent = getIntent();
         task = (Task) intent.getSerializableExtra("task");

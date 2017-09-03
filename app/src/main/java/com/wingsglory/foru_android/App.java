@@ -1,9 +1,12 @@
 package com.wingsglory.foru_android;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.IntentFilter;
 
 import com.wingsglory.foru_android.model.Task;
 import com.wingsglory.foru_android.model.User;
+import com.wingsglory.foru_android.view.receiver.MyReceiver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +21,12 @@ public class App extends Application {
     public static final String BASE_URL = "http://118.89.51.45:8080/foru";
 //    public static final String BASE_URL = "http://192.168.244.86:8080";
     public static final String DEFAULT_IMAGE_URL = "https://ps.ssl.qhimg.com/t0123f47c7eae031cbb.jpg";
+
+    // 推送信息的标题
+    public static final String TASK_NEW = "TASK_NEW";
+    public static final String TASK_ACCEPT = "TASK_ACCEPT";
+    public static final String TASK_COMPLETE = "TASK_COMPLETE";
+    public static final String TASK_DONE = "TASK_DONE";
 
     private User user;
     private Map<Integer, Task> taskBuffer = new HashMap<>();

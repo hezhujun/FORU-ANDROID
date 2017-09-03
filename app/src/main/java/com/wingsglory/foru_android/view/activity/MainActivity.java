@@ -12,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.MapView;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
@@ -24,9 +26,8 @@ import com.wingsglory.foru_android.view.fragment.TaskFragment;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
-    
-    private App app;
+public class MainActivity extends BaseActivity {
+    private MapView mMapView;
 
     private FragmentManager fragmentManager;
     private TaskFragment taskFragment;
@@ -58,8 +59,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        app = (App) getApplication();
+
         user  = app.getUser();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -148,4 +148,22 @@ public class MainActivity extends AppCompatActivity {
             transaction.hide(meFragment);
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
+        if (taskFragment != null) {
+            taskFragment.show();
+        }
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
+        if (taskFragment != null) {
+            taskFragment.hide();
+        }
+    }
+
 }

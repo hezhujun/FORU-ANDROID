@@ -36,12 +36,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class UpdateEmailActivity extends AppCompatActivity {
+public class UpdateEmailActivity extends BaseActivity {
     private static final String TAG = "UpdateEmailActivity";
     private static final String EMAIL_REGEX =
             "\\w[-\\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\\.)+[A-Za-z]{2,14}";
 
-    private App app;
     private User user;
 
     private EditText userEmailView;

@@ -21,6 +21,7 @@ import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.LogUtil;
+import com.wingsglory.foru_android.util.UserSaveUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,7 +33,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "RegisterActivity";
     private static final String PHONE_REGEX = "(13\\d|14[57]|15[^4,\\D]|17[13678]|18\\d)\\d{8}|170[0589]\\d{7}";
@@ -261,6 +262,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                         // 保存用户信息到Application中
                         App app = (App) getApplication();
                         app.setUser(user);
+                        UserSaveUtil.save(app, user.getId(), phone, password);
+                        UserSaveUtil.setAutoLogin(app, true);
                         MainActivity.actionStart(RegisterActivity.this);
                         finish();
                     } else {

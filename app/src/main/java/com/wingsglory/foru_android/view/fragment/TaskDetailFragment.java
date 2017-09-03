@@ -1,6 +1,7 @@
 package com.wingsglory.foru_android.view.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -121,7 +122,8 @@ public class TaskDetailFragment extends Fragment
             task = myTaskAcceptedList.get((int) id);
         }
         if (task != null) {
-            TaskDetailActivity.actionStart(getActivity(), task);
+            Intent intent = TaskDetailActivity.actionStart(getActivity(), task);
+            startActivity(intent);
         }
         return true;
     }

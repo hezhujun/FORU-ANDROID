@@ -35,7 +35,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AddresseeListActivity extends AppCompatActivity
+public class AddresseeListActivity extends BaseActivity
         implements AdapterView.OnItemClickListener {
     private static final String TAG = "AddresseeListActivity";
 
@@ -45,7 +45,6 @@ public class AddresseeListActivity extends AppCompatActivity
     private View noAddresseeMsgView;
 
     private User user;
-    private App app;
 
     public static Intent actionStart(Context context, int requestCode) {
         Intent intent = new Intent(context, AddresseeListActivity.class);

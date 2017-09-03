@@ -45,7 +45,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AddressActivity extends AppCompatActivity
+public class AddressActivity extends BaseActivity
         implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "AddressActivity";
 
@@ -56,7 +56,6 @@ public class AddressActivity extends AppCompatActivity
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private User user;
-    private App app;
 
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, AddressActivity.class);

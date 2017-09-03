@@ -281,7 +281,6 @@ public class TaskFragment extends Fragment
     public void onPause() {
         super.onPause();
         mMapView.onPause();
-        LogUtil.d(TAG, "----------------------------------------onPause");
     }
 
     @Override
@@ -413,7 +412,8 @@ public class TaskFragment extends Fragment
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.task_map_info_view:
-                TaskDetailActivity.actionStart(getActivity(), currentSelectedTask);
+                Intent intent = TaskDetailActivity.actionStart(getActivity(), currentSelectedTask);
+                startActivity(intent);
                 break;
         }
     }
@@ -527,19 +527,19 @@ public class TaskFragment extends Fragment
     }
 
     public void hide() {
-        if (myLocationStyle.getMyLocationType() == MyLocationStyle.LOCATION_TYPE_FOLLOW) {
-            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
-            aMap.setMyLocationStyle(myLocationStyle);
-        }
         mMapView.onPause();
+//        if (myLocationStyle.getMyLocationType() == MyLocationStyle.LOCATION_TYPE_FOLLOW) {
+//            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
+//            aMap.setMyLocationStyle(myLocationStyle);
+//        }
     }
 
     public void show() {
         mMapView.onResume();
-        if (!isGetMyLocation) {
-            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
-            aMap.setMyLocationStyle(myLocationStyle);
-        }
+//        if (!isGetMyLocation) {
+//            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW);
+//            aMap.setMyLocationStyle(myLocationStyle);
+//        }
         // 获取任务列表
         LatLng center = aMap.getCameraPosition().target;
         new TaskListAsyncTask(user.getId(),

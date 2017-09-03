@@ -46,7 +46,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okio.BufferedSink;
 
-public class AddAddressActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddAddressActivity extends BaseActivity implements View.OnClickListener {
     public static final int ADDRESS_ADD = 1;
     public static final int ADDRESS_UPDATE = 2;
 
@@ -67,7 +67,6 @@ public class AddAddressActivity extends AppCompatActivity implements View.OnClic
     private ProgressDialog progressDialog;
 
     private User user;
-    private App app;
     private Position position;
 
     public static void actionStart(Context context, int operation, Addressee addressee) {

@@ -1,4 +1,4 @@
-package com.wingsglory.foru_android.view.Receiver;
+package com.wingsglory.foru_android.view.receiver;
 
 import android.content.Context;
 

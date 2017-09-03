@@ -36,12 +36,11 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class UpdateRealInfoActivity extends AppCompatActivity {
+public class UpdateRealInfoActivity extends BaseActivity {
     private static final String TAG = "UpdateRealInfoActivity";
     private static final String ID_CARD_NUMBER =
             "^(\\d{6})(\\d{4})(\\d{2})(\\d{2})(\\d{3})([0-9]|X)$";
 
-    private App app;
     private User user;
 
     private EditText userRealNameView;

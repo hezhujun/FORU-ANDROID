@@ -47,7 +47,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PositionActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, DistrictSearch.OnDistrictSearchListener, AMap.OnCameraChangeListener, AMap.OnMyLocationChangeListener, GeocodeSearch.OnGeocodeSearchListener, AMap.OnMapTouchListener {
+public class PositionActivity extends BaseActivity implements AdapterView.OnItemSelectedListener, DistrictSearch.OnDistrictSearchListener, AMap.OnCameraChangeListener, AMap.OnMyLocationChangeListener, GeocodeSearch.OnGeocodeSearchListener, AMap.OnMapTouchListener {
 
     /**
      * @param context

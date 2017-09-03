@@ -15,6 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
+import com.wingsglory.foru_android.util.UserSaveUtil;
 import com.wingsglory.foru_android.view.activity.AddressActivity;
 import com.wingsglory.foru_android.view.activity.LoginActivity;
 import com.wingsglory.foru_android.view.activity.MyInfoActivity;
@@ -105,6 +106,9 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.logout:
                 LoginActivity.actionStart(getActivity());
+                // 清空信息
+                UserSaveUtil.save(app, -1, "", "");
+                UserSaveUtil.setAutoLogin(app, false);
                 getActivity().finish();
                 break;
             default:

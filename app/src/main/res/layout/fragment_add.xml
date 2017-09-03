@@ -110,9 +110,9 @@
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:gravity="center|left"
-                android:textSize="18sp"
+                android:textSize="15sp"
                 android:textColor="@color/black"
-                android:text="地址" />
+                android:text="任务地址" />
 
             <TextView
                 android:id="@+id/task_address"
