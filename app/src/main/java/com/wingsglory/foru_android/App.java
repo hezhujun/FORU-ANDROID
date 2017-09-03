@@ -28,6 +28,8 @@ public class App extends Application {
     public static final String TASK_COMPLETE = "TASK_COMPLETE";
     public static final String TASK_FINISH = "TASK_FINISH";
     public static final String TASK_DOING = "TASK_DOING";
+    public static final String TASK_ABANDON = "TASK_ABANDON";
+    public static final String TASK_DELETE = "TASK_DELETE";
 
     private User user;
     private Map<Integer, Task> taskBuffer = new HashMap<>();
