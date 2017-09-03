@@ -1,14 +1,11 @@
 package com.wingsglory.foru_android.view.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +18,7 @@ import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.LogUtil;
-import com.wingsglory.foru_android.util.UserSaveUtil;
+import com.wingsglory.foru_android.util.PreferenceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -262,8 +259,8 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                         // 保存用户信息到Application中
                         App app = (App) getApplication();
                         app.setUser(user);
-                        UserSaveUtil.save(app, user.getId(), phone, password);
-                        UserSaveUtil.setAutoLogin(app, true);
+                        PreferenceUtil.save(app, user.getId(), phone, password);
+                        PreferenceUtil.setAutoLogin(app, true);
                         MainActivity.actionStart(RegisterActivity.this);
                         finish();
                     } else {

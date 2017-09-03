@@ -1,15 +1,11 @@
 package com.wingsglory.foru_android.view.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,16 +17,13 @@ import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.User;
-import com.wingsglory.foru_android.util.HttpUtil;
 import com.wingsglory.foru_android.util.LogUtil;
-import com.wingsglory.foru_android.util.UserSaveUtil;
+import com.wingsglory.foru_android.util.PreferenceUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
@@ -64,11 +57,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         signUpView = (Button) findViewById(R.id.register_btn);
         signUpView.setOnClickListener(this);
 
-        boolean isAutoLogin = UserSaveUtil.isAutoLogin(this);
+        boolean isAutoLogin = PreferenceUtil.isAutoLogin(this);
         if (isAutoLogin) {
-            String phone = UserSaveUtil.readUserPhone(this);
+            String phone = PreferenceUtil.readUserPhone(this);
             phoneView.setText(phone);
-            String password = UserSaveUtil.readUserPassword(this);
+            String password = PreferenceUtil.readUserPassword(this);
             passwordView.setText(password);
             signIn(phone, password);
         }
@@ -133,8 +126,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         User user = objectMapper.readValue(userStr, User.class);
                         App app = (App) getApplication();
                         app.setUser(user);
-                        UserSaveUtil.save(app, user.getId(), phone, password);
-                        UserSaveUtil.setAutoLogin(app, true);
+                        PreferenceUtil.save(app, user.getId(), phone, password);
+                        PreferenceUtil.setAutoLogin(app, true);
                         MainActivity.actionStart(LoginActivity.this);
                         finish();
                     } else {

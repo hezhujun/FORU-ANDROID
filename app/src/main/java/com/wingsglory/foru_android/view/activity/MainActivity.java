@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MainActivity extends BaseActivity {
-    private MapView mMapView;
 
     private FragmentManager fragmentManager;
     private TaskFragment taskFragment;
@@ -163,6 +162,24 @@ public class MainActivity extends BaseActivity {
         //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制
         if (taskFragment != null) {
             taskFragment.hide();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态
+        if (taskFragment != null && taskFragment.getmMapView() != null) {
+            taskFragment.getmMapView().onSaveInstanceState(outState);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图
+        if (taskFragment != null && taskFragment.getmMapView() != null) {
+            taskFragment.getmMapView().onDestroy();
         }
     }
 

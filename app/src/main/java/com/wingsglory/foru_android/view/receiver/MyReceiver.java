@@ -14,8 +14,9 @@ import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.Result;
 import com.wingsglory.foru_android.model.Task;
+import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.util.LogUtil;
-import com.wingsglory.foru_android.util.UserSaveUtil;
+import com.wingsglory.foru_android.util.PreferenceUtil;
 import com.wingsglory.foru_android.view.activity.TaskDetailActivity;
 
 import org.json.JSONException;
@@ -44,7 +45,7 @@ public class MyReceiver extends BroadcastReceiver {
         if (JPushInterface.ACTION_REGISTRATION_ID.equals(intent.getAction())) {
             String regId = bundle.getString(JPushInterface.EXTRA_REGISTRATION_ID);
             LogUtil.d(TAG, "[MyReceiver] 接收Registration Id : " + regId);
-        }else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
+        } else if (JPushInterface.ACTION_MESSAGE_RECEIVED.equals(intent.getAction())) {
             LogUtil.d(TAG, "收到了自定义消息。消息ID是：" + bundle.getString(JPushInterface.EXTRA_MSG_ID));
             LogUtil.d(TAG, "收到了自定义消息。消息标题是：" + bundle.getString(JPushInterface.EXTRA_TITLE));
             LogUtil.d(TAG, "收到了自定义消息。消息内容是：" + bundle.getString(JPushInterface.EXTRA_MESSAGE));
@@ -53,6 +54,8 @@ public class MyReceiver extends BroadcastReceiver {
             String title = bundle.getString(JPushInterface.EXTRA_TITLE);
             if (App.TASK_NEW.equals(title)) {
                 handleNewTaskPush(context, bundle.getString(JPushInterface.EXTRA_MESSAGE));
+            } else if (App.TASK_DOING.equals(title)) {
+                handleTaskDoingPush(context, bundle.getString(JPushInterface.EXTRA_MESSAGE));
             }
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             LogUtil.d(TAG, "收到了通知");
@@ -72,7 +75,6 @@ public class MyReceiver extends BroadcastReceiver {
                 try {
                     JSONObject jsonObject = new JSONObject(message);
                     int taskId = jsonObject.getInt("taskId");
-                    // 用户没有登录过
                     if (taskId == -1) {
                         return;
                     }
@@ -102,13 +104,40 @@ public class MyReceiver extends BroadcastReceiver {
 
     }
 
-    private void handleTaskDoingPush(final Context context, final  String message) {
+    private void handleTaskDoingPush(final Context context, final String message) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject jsonObject = new JSONObject(message);
+                    int taskId = jsonObject.getInt("taskId");
+                    if (taskId == -1) {
+                        return;
+                    }
+                    Task task = getTask(context, taskId);
+                    if (task == null) {
+                        // 任务信息获取失败
+                        return;
+                    }
+                    User recipient = task.getRecipient();
+                    if (recipient == null || recipient.getLatitude() == null || recipient.getLongitude() == null) {
+                        return;
+                    }
+                    PreferenceUtil.saveUserPosition(context, recipient.getId(),
+                            recipient.getLatitude().toString(), recipient.getLongitude().toString());
+                } catch (
+                        JSONException e)
 
+                {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
     }
 
     private Task getTask(Context context, int taskId) {
         Task task = null;
-        int userId = UserSaveUtil.readUserId(context);
+        int userId = PreferenceUtil.readUserId(context);
         OkHttpClient client = new OkHttpClient();
         FormBody formBody = new FormBody.Builder()
                 .add("userId", String.valueOf(userId))

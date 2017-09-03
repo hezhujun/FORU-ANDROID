@@ -120,6 +120,10 @@ public class TaskFragment extends Fragment
         return taskFragment;
     }
 
+    public MapView getmMapView() {
+        return mMapView;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
