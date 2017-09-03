@@ -258,10 +258,10 @@ public class TaskDetailFragment extends Fragment
      * 重新进入时刷新数据
      */
     public void show() {
-        publishedPageBean.setPage(1);
+        publishedPageBean.setPage(0);
         publishedPageBean.setTotalRows(Integer.MAX_VALUE);
         publishedPageBean.setBeans(myTaskPublishedList);
-        acceptedPageBean.setPage(1);
+        acceptedPageBean.setPage(0);
         publishedPageBean.setTotalRows(Integer.MAX_VALUE);
         acceptedPageBean.setBeans(myTaskAcceptedList);
 

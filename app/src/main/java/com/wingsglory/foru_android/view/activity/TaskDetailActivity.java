@@ -209,6 +209,7 @@ public class TaskDetailActivity extends BaseActivity implements View.OnClickList
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
+                                        task.setState(Task.TASK_STATE_DELETE);
                                         finish();
                                     }
                                 }).execute();

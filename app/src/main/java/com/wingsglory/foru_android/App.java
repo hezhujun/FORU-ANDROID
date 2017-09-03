@@ -26,7 +26,8 @@ public class App extends Application {
     public static final String TASK_NEW = "TASK_NEW";
     public static final String TASK_ACCEPT = "TASK_ACCEPT";
     public static final String TASK_COMPLETE = "TASK_COMPLETE";
-    public static final String TASK_DONE = "TASK_DONE";
+    public static final String TASK_FINISH = "TASK_FINISH";
+    public static final String TASK_DOING = "TASK_DOING";
 
     private User user;
     private Map<Integer, Task> taskBuffer = new HashMap<>();

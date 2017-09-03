@@ -102,6 +102,10 @@ public class MyReceiver extends BroadcastReceiver {
 
     }
 
+    private void handleTaskDoingPush(final Context context, final  String message) {
+
+    }
+
     private Task getTask(Context context, int taskId) {
         Task task = null;
         int userId = UserSaveUtil.readUserId(context);
