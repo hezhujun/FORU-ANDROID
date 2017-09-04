@@ -12,7 +12,7 @@ public class Relation extends RelationKey implements Serializable {
 
     private User user2;
 
-    private Integer interactionCount = 0;
+    private Integer interactionCount;
 
     private String relation;
 

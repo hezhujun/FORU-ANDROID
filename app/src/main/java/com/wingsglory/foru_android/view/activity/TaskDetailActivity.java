@@ -1,10 +1,12 @@
 package com.wingsglory.foru_android.view.activity;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -109,14 +111,7 @@ public class TaskDetailActivity extends BaseActivity implements View.OnClickList
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setMyLocationEnabled(true);
         aMap.setOnMyLocationChangeListener(this);
-
-        TaskContent taskContent = task.getContent();
-        target = new LatLng(taskContent.getLatitude().doubleValue(), taskContent.getLongitude().doubleValue());
-        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(target, 15.0f));
         aMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        targetMarker = aMap.addMarker(new MarkerOptions().position(target).title("任务地址")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.amap_end)));
 
         mRouteSearch = new RouteSearch(this);
         mRouteSearch.setRouteSearchListener(this);
@@ -174,6 +169,15 @@ public class TaskDetailActivity extends BaseActivity implements View.OnClickList
         confirmTaskButton.setVisibility(View.GONE);
 
         TaskContent content = task.getContent();
+        // 显示目的地位置
+        target = new LatLng(content.getLatitude().doubleValue(), content.getLongitude().doubleValue());
+        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(target, 15.0f));
+        if (targetMarker == null) {
+            targetMarker = aMap.addMarker(new MarkerOptions().position(target).title("任务地址")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.amap_end)));
+        } else {
+            targetMarker.setPosition(target);
+        }
         User publisher = task.getPublisher();
         if (publisher.getProtraitUrl() != null && !"".equals(publisher.getProtraitUrl())) {
             Glide.with(this).load(publisher.getProtraitUrl())
@@ -303,18 +307,49 @@ public class TaskDetailActivity extends BaseActivity implements View.OnClickList
 
         Intent intent = getIntent();
         task = (Task) intent.getSerializableExtra("task");
+        // 通过推送收到的任务没有保存再App中，现在保存
+        app.addTask(task);
 
         initView();
         Intent serviceIntent = new Intent(this, ForuService.class);
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         mMapView = (MapView) findViewById(R.id.map);
         mMapView.onCreate(savedInstanceState);
-        initMap();
+
+        taskStateChangedReceiver = new TaskStateChangedReceiver();
+        IntentFilter taskStateChangedIntentFilter = new IntentFilter("com.wingsglory.foru_android.TASK_STATE_CHANGED");
+        registerReceiver(taskStateChangedReceiver, taskStateChangedIntentFilter);
+    }
+
+    private TaskStateChangedReceiver taskStateChangedReceiver;
+
+    class TaskStateChangedReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle bundle = intent.getExtras();
+            String title = bundle.getString("title");
+            Task task = (Task) bundle.getSerializable("task");
+            if (App.TASK_ACCEPT.equals(title)) {
+                // ...
+            } else if (App.TASK_ABANDON.equals(title)) {
+                // ...
+            } else if (App.TASK_COMPLETE.equals(title)) {
+                // ...
+            } else if (App.TASK_FINISH.equals(title)) {
+                // ...
+            }
+            if (task.getId().equals(TaskDetailActivity.this.task.getId())) {
+                TaskDetailActivity.this.task = task;
+                initData();
+            }
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        initMap();
         initData();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
         mMapView.onResume();
@@ -560,6 +595,7 @@ public class TaskDetailActivity extends BaseActivity implements View.OnClickList
         if (serviceConnection != null) {
             unbindService(serviceConnection);
         }
+        unregisterReceiver(taskStateChangedReceiver);
     }
 
     @Override

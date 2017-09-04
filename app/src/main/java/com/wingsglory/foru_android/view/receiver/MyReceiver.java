@@ -1,5 +1,6 @@
 package com.wingsglory.foru_android.view.receiver;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -56,6 +57,24 @@ public class MyReceiver extends BroadcastReceiver {
                 handleNewTaskPush(context, bundle.getString(JPushInterface.EXTRA_MESSAGE));
             } else if (App.TASK_DOING.equals(title)) {
                 handleTaskDoingPush(context, bundle.getString(JPushInterface.EXTRA_MESSAGE));
+            } else if (App.TASK_ACCEPT.equals(title)) {
+                handleTaskStateChanged(context, bundle.getString(JPushInterface.EXTRA_MESSAGE), App.TASK_ACCEPT);
+            } else if (App.TASK_ABANDON.equals(title)) {
+                handleTaskStateChanged(context, bundle.getString(JPushInterface.EXTRA_MESSAGE), App.TASK_ABANDON);
+            } else if (App.TASK_COMPLETE.equals(title)) {
+                handleTaskStateChanged(context, bundle.getString(JPushInterface.EXTRA_MESSAGE), App.TASK_COMPLETE);
+            } else if (App.TASK_FINISH.equals(title)) {
+                handleTaskStateChanged(context, bundle.getString(JPushInterface.EXTRA_MESSAGE), App.TASK_FINISH);
+            } else if (App.TASK_DELETE.equals(title)) {
+                if (App.getApp() != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(bundle.getString(JPushInterface.EXTRA_MESSAGE));
+                        int taskId = jsonObject.getInt("taskId");
+                        App.getApp().remove(taskId);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         } else if (JPushInterface.ACTION_NOTIFICATION_RECEIVED.equals(intent.getAction())) {
             LogUtil.d(TAG, "收到了通知");
@@ -75,9 +94,6 @@ public class MyReceiver extends BroadcastReceiver {
                 try {
                     JSONObject jsonObject = new JSONObject(message);
                     int taskId = jsonObject.getInt("taskId");
-                    if (taskId == -1) {
-                        return;
-                    }
                     Task task = getTask(context, taskId);
                     if (task == null) {
                         // 任务信息获取失败
@@ -111,9 +127,6 @@ public class MyReceiver extends BroadcastReceiver {
                 try {
                     JSONObject jsonObject = new JSONObject(message);
                     int taskId = jsonObject.getInt("taskId");
-                    if (taskId == -1) {
-                        return;
-                    }
                     Task task = getTask(context, taskId);
                     if (task == null) {
                         // 任务信息获取失败
@@ -125,12 +138,41 @@ public class MyReceiver extends BroadcastReceiver {
                     }
                     PreferenceUtil.saveUserPosition(context, recipient.getId(),
                             recipient.getLatitude().toString(), recipient.getLongitude().toString());
-                } catch (
-                        JSONException e)
-
-                {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        }.start();
+    }
+
+    private void handleTaskStateChanged(final Context context, final String message, final String title) {
+        new Thread() {
+            @Override
+            public void run() {
+                Task task = null;
+                try {
+                    JSONObject jsonObject = new JSONObject(message);
+                    int taskId = jsonObject.getInt("taskId");
+                    task = getTask(context, taskId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (task == null) {
+                    return;
+                }
+                App app = App.getApp();
+                if (app == null) {
+                    return;
+                }
+                app.addTask(task);
+
+                // 提醒任务更新了
+                Intent intent = new Intent("com.wingsglory.foru_android.TASK_STATE_CHANGED");
+                Bundle bundle = new Bundle();
+                bundle.putString("title", title);
+                bundle.putSerializable("task", task);
+                intent.putExtras(bundle);
+                context.sendBroadcast(intent);
             }
         }.start();
     }

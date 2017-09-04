@@ -1,5 +1,6 @@
 package com.wingsglory.foru_android.view.activity;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -35,6 +36,7 @@ public class MainActivity extends BaseActivity {
     private CommunityFragment communityFragment;
     private MeFragment meFragment;
     private ActionBar mActionBar;
+    private Fragment currentFragment;
 
     private User user;
 
@@ -59,7 +61,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        user  = app.getUser();
+        user = app.getUser();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -86,6 +88,7 @@ public class MainActivity extends BaseActivity {
                     taskFragment.show();
                 }
                 mActionBar.setTitle("周边任务");
+                currentFragment = taskFragment;
                 break;
             case R.id.task_detail_fragment:
                 if (taskDetailFragment == null) {
@@ -96,6 +99,7 @@ public class MainActivity extends BaseActivity {
                     taskDetailFragment.show();
                 }
                 mActionBar.setTitle("我的任务");
+                currentFragment = taskDetailFragment;
                 break;
             case R.id.help_fragment:
                 if (addFragment == null) {
@@ -105,6 +109,7 @@ public class MainActivity extends BaseActivity {
                     fragmentTransaction.show(addFragment);
                 }
                 mActionBar.setTitle("发布任务");
+                currentFragment = addFragment;
                 break;
             case R.id.community_fragment:
                 if (communityFragment == null) {
@@ -114,6 +119,7 @@ public class MainActivity extends BaseActivity {
                     fragmentTransaction.show(communityFragment);
                 }
                 mActionBar.setTitle("交流列表");
+                currentFragment = communityFragment;
                 break;
             case R.id.me_fragment:
                 if (meFragment == null) {
@@ -123,27 +129,28 @@ public class MainActivity extends BaseActivity {
                     fragmentTransaction.show(meFragment);
                 }
                 mActionBar.setTitle("个人主页");
+                currentFragment = meFragment;
                 break;
         }
         fragmentTransaction.commit();
     }
 
-    private void hideFragments(FragmentTransaction transaction){
-        if(taskFragment != null){
+    private void hideFragments(FragmentTransaction transaction) {
+        if (taskFragment != null) {
             transaction.hide(taskFragment);
             taskFragment.hide();
         }
-        if(taskDetailFragment != null){
+        if (taskDetailFragment != null) {
             transaction.hide(taskDetailFragment);
             taskDetailFragment.hide();
         }
-        if(addFragment != null){
+        if (addFragment != null) {
             transaction.hide(addFragment);
         }
-        if(communityFragment != null){
+        if (communityFragment != null) {
             transaction.hide(communityFragment);
         }
-        if(meFragment != null){
+        if (meFragment != null) {
             transaction.hide(meFragment);
         }
     }
@@ -152,10 +159,17 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图
-        if (taskFragment != null) {
-            taskFragment.show();
+        if (currentFragment != null) {
+            if (currentFragment instanceof TaskFragment
+                    && taskFragment != null) {
+                taskFragment.show();
+            } else if (currentFragment instanceof TaskDetailFragment
+                    && taskDetailFragment != null) {
+                taskDetailFragment.show();
+            }
         }
     }
+
     @Override
     protected void onPause() {
         super.onPause();

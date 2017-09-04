@@ -24,13 +24,13 @@ public class User implements Serializable {
 
     private BigDecimal longitude;
 
-    private Integer creditValue = 0;
+    private Integer creditValue;
 
-    private Integer publishCount = 0;
+    private Integer publishCount;
 
-    private Integer doneCount = 0;
+    private Integer doneCount;
 
-    private Integer failCount = 0;
+    private Integer failCount;
 
     private String realName;
 

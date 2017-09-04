@@ -23,7 +23,7 @@ public class TaskContent implements Serializable {
 
     private Date timeout;
 
-    private BigDecimal reward = new BigDecimal(0);
+    private BigDecimal reward;
 
     public Integer getId() {
         return id;

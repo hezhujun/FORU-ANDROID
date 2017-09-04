@@ -19,7 +19,7 @@ import cn.jpush.android.api.JPushInterface;
 
 public class App extends Application {
     public static final String BASE_URL = "http://118.89.51.45:8080/foru";
-//    public static final String BASE_URL = "http://192.168.244.86:8080";
+//    public static final String BASE_URL = "http://192.168.1.120:8080/foru";
     public static final String DEFAULT_IMAGE_URL = "https://ps.ssl.qhimg.com/t0123f47c7eae031cbb.jpg";
 
     // 推送信息的标题
@@ -33,6 +33,7 @@ public class App extends Application {
 
     private User user;
     private Map<Integer, Task> taskBuffer = new HashMap<>();
+    private static App app;
 
     public User getUser() {
         return user;
@@ -61,8 +62,13 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        app = this;
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
         JPushInterface.requestPermission(this);
+    }
+
+    public static App getApp() {
+        return app;
     }
 }
