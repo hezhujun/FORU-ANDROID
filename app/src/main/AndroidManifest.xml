@@ -37,6 +37,15 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="7c0ca1d70a513fdc56a22db4a9e08db8" />
+        <meta-data
+            android:name="AA_DB_NAME" android:value="jchat.db"/>
+        <meta-data
+            android:name="AA_MODELS"
+            android:value="jiguang.chat.database.UserEntry, jiguang.chat.database.FriendEntry,
+             jiguang.chat.database.FriendRecommendEntry, jiguang.chat.database.ConversationEntry"/>
+        <meta-data
+            android:name="AA_DB_VERSION"
+            android:value="4"/>
 
         <activity
             android:name=".view.activity.MainActivity"
@@ -169,6 +178,19 @@
                 <category android:name="com.wingsglory.foru_android" />
             </intent-filter>
         </receiver>
+        <!-- Required SDK核心功能 -->
+        <receiver
+            android:name="cn.jpush.im.android.helpers.IMReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter android:priority="1000">
+                <action android:name="cn.jpush.im.android.action.IM_RESPONSE"/>
+                <action android:name="cn.jpush.im.android.action.NOTIFICATION_CLICK_PROXY"/>
+
+                <category android:name="${applicationId}"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>

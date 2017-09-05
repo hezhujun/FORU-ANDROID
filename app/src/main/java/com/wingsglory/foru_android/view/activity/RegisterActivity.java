@@ -23,8 +23,12 @@ import com.wingsglory.foru_android.util.PreferenceUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -281,5 +285,49 @@ public class RegisterActivity extends BaseActivity implements View.OnClickListen
                 }
             }
         }
+    }
+
+    private void jMessageRegister(final String phone, final String username, final String password) {
+        new Thread() {
+            @Override
+            public void run() {
+                JMessageClient.register(username, password, new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if (i == 0) {
+                            jMessageLogin(username, password);
+                        } else {
+                            Toast.makeText(app, "注册失败", Toast.LENGTH_SHORT).show();
+                            LogUtil.d(TAG, "JMessage 注册失败" + s);
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private void jMessageLogin(final String username, final String password) {
+        new Thread() {
+            @Override
+            public void run() {
+                JMessageClient.login(username, password, new BasicCallback() {
+                    private int count = 0;
+                    @Override
+                    public void gotResult(int responseCode, String responseMessage) {
+                        if (responseCode == 0) {
+                        } else {
+                            LogUtil.d(TAG, "JMessage 登录失败" + responseMessage);
+                            count++;
+                            // 3次重试机会
+                            if (count == 3) {
+                                return;
+                            } else {
+                                JMessageClient.login(username, password, this);
+                            }
+                        }
+                    }
+                });
+            }
+        }.start();
     }
 }

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,12 +25,18 @@ import com.wingsglory.foru_android.util.PreferenceUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
+import cn.jpush.im.api.BasicCallback;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
@@ -80,7 +88,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 break;
         }
     }
-    
+
     private void signIn() {
         String phone = phoneView.getText().toString();
         if ("".equals(phone)) {
@@ -128,6 +136,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         app.setUser(user);
                         PreferenceUtil.save(app, user.getId(), phone, password);
                         PreferenceUtil.setAutoLogin(app, true);
+                        jMessageLogin(user.getUsername(), password);
                         MainActivity.actionStart(LoginActivity.this);
                         finish();
                     } else {
@@ -174,6 +183,102 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 e.printStackTrace();
             }
             return null;
+        }
+    }
+
+    private void jMessageLogin(final String username, final String password) {
+        new Thread() {
+            @Override
+            public void run() {
+                JMessageClient.login(username, password, new BasicCallback() {
+                    private int count = 0;
+
+                    @Override
+                    public void gotResult(int responseCode, String responseMessage) {
+                        if (responseCode == 0) {
+                            LogUtil.d(TAG, "JMessage 登录成功");
+                            new Thread() {
+                                @Override
+                                public void run() {
+                                    updateUserAvatar();
+                                }
+                            }.start();
+                        } else {
+                            LogUtil.d(TAG, "JMessage 登录失败" + responseMessage);
+                            count++;
+                            // 3次重试机会
+                            if (count == 3) {
+                                return;
+                            } else {
+                                JMessageClient.login(username, password, this);
+                            }
+                        }
+                    }
+                });
+            }
+        }.start();
+    }
+
+    private void updateUserAvatar() {
+        final User user = app.getUser();
+        if (user == null || user.getProtraitUrl() == null) {
+            return;
+        }
+        final UserInfo userInfo = JMessageClient.getMyInfo();
+        String avatar = userInfo.getAvatar();
+        if (TextUtils.isEmpty(avatar)) {
+            String lastFormat = user.getProtraitUrl().substring(user.getProtraitUrl().lastIndexOf("."));
+            if (TextUtils.isEmpty(lastFormat)) {
+                lastFormat = ".jpg";
+            }
+            String filename = user.getUsername() + lastFormat;
+            File file = new File(getExternalCacheDir() + File.separator + filename);
+            File directory = file.getParentFile();
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+            if (!file.exists()) {
+                OkHttpClient okHttpClient = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url(user.getProtraitUrl())
+                        .get()
+                        .build();
+                FileOutputStream fos = null;
+                try {
+                    Response response = okHttpClient.newCall(request).execute();
+                    ResponseBody responseBody = response.body();
+                    if (response.isSuccessful()) {
+                        fos = new FileOutputStream(file);
+                        fos.write(responseBody.bytes());
+                        fos.flush();
+                        fos.close();
+                    } else {
+                        LogUtil.d(TAG, responseBody.string());
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (fos != null) {
+                        try {
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+            if (file.exists()) {
+                JMessageClient.updateUserAvatar(file, new BasicCallback() {
+                    @Override
+                    public void gotResult(int i, String s) {
+                        if (i == 0) {
+                            LogUtil.d(TAG, "JMessage 更新头像成功");
+                        } else {
+                            LogUtil.d(TAG, "更新头像失败：" + s);
+                        }
+                    }
+                });
+            }
         }
     }
 

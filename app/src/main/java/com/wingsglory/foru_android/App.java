@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.im.android.api.JMessageClient;
 
 /**
  * Created by hezhujun on 2017/6/28.
@@ -65,6 +66,8 @@ public class App extends Application {
         app = this;
         JPushInterface.setDebugMode(true);
         JPushInterface.init(this);
+        JMessageClient.setDebugMode(true);
+        JMessageClient.init(this, true);
         JPushInterface.requestPermission(this);
     }
 

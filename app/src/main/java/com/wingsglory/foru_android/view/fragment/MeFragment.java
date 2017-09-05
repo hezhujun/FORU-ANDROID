@@ -20,6 +20,8 @@ import com.wingsglory.foru_android.view.activity.AddressActivity;
 import com.wingsglory.foru_android.view.activity.LoginActivity;
 import com.wingsglory.foru_android.view.activity.MyInfoActivity;
 
+import cn.jpush.im.android.api.JMessageClient;
+
 /**
  * Created by hezhujun on 2017/6/30.
  */
@@ -109,6 +111,7 @@ public class MeFragment extends Fragment implements View.OnClickListener {
                 // 清空信息
                 PreferenceUtil.save(app, -1, "", "");
                 PreferenceUtil.setAutoLogin(app, false);
+                JMessageClient.logout();
                 getActivity().finish();
                 break;
             default:
