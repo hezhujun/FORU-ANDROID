@@ -61,6 +61,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.model.UserInfo;
+import jiguang.chat.activity.ChatActivity;
+import jiguang.chat.application.JGApplication;
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -159,6 +163,22 @@ public class TaskDetailActivity extends BaseActivity implements View.OnClickList
         confirmTaskButton.setOnClickListener(this);
         progressDialog = new ProgressDialog(this);
         scrollView = findViewById(R.id.scrollView);
+        findViewById(R.id.community).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserInfo userInfo = JMessageClient.getMyInfo();
+                // 登录未完成
+                if (userInfo == null) {
+                    return;
+                }
+                Intent intent = new Intent(TaskDetailActivity.this, ChatActivity.class);
+                User publisher = task.getPublisher();
+                intent.putExtra(JGApplication.CONV_TITLE, publisher.getUsername());
+                intent.putExtra(JGApplication.TARGET_ID, publisher.getUsername());
+                intent.putExtra(JGApplication.TARGET_APP_KEY, App.APP_KEY);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initData() {

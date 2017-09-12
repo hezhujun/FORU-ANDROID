@@ -226,53 +226,76 @@
 
             <LinearLayout
                 android:layout_marginTop="5dp"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="50dp">
 
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/delete_task"
-                    android:background="@color/blue"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="删除"
-                    android:textColor="@color/white" />
+                <RelativeLayout
+                    android:id="@+id/community"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/accept_task"
-                    android:background="@color/blue"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="接受"
-                    android:textColor="@color/white" />
+                    <ImageView
+                        android:layout_centerInParent="true"
+                        android:background="@drawable/communication"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
 
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/complete_task"
-                    android:background="@color/blue"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="完成"
-                    android:textColor="@color/white" />
+                </RelativeLayout>
 
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/confirm_task"
-                    android:background="@color/blue"
-                    android:textSize="20sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:gravity="center"
-                    android:text="确认完成"
-                    android:textColor="@color/white" />
+
+
+                <FrameLayout
+                    android:layout_weight="3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/delete_task"
+                        android:background="@color/blue"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center"
+                        android:text="删除"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/accept_task"
+                        android:background="@color/blue"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center"
+                        android:text="接受"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/complete_task"
+                        android:background="@color/blue"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center"
+                        android:text="完成"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/confirm_task"
+                        android:background="@color/blue"
+                        android:textSize="20sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:gravity="center"
+                        android:text="确认完成"
+                        android:textColor="@color/white" />
+
+                </FrameLayout>
 
             </LinearLayout>
 

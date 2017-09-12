@@ -191,6 +191,10 @@
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name="jiguang.chat.activity.ChatActivity"
+            android:theme="@style/BaseThemes"/>
+
     </application>
 
 </manifest>

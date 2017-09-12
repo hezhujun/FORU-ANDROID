@@ -1,31 +1,25 @@
 package com.wingsglory.foru_android.view.activity;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.amap.api.maps.AMap;
-import com.amap.api.maps.MapView;
-import com.wingsglory.foru_android.App;
 import com.wingsglory.foru_android.R;
 import com.wingsglory.foru_android.model.User;
 import com.wingsglory.foru_android.view.fragment.AddFragment;
-import com.wingsglory.foru_android.view.fragment.CommunityFragment;
 import com.wingsglory.foru_android.view.fragment.MeFragment;
 import com.wingsglory.foru_android.view.fragment.TaskDetailFragment;
 import com.wingsglory.foru_android.view.fragment.TaskFragment;
 
-import java.util.HashMap;
-import java.util.Map;
+import jiguang.chat.activity.fragment.ConversationListFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -33,7 +27,7 @@ public class MainActivity extends BaseActivity {
     private TaskFragment taskFragment;
     private TaskDetailFragment taskDetailFragment;
     private AddFragment addFragment;
-    private CommunityFragment communityFragment;
+    private ConversationListFragment conversationListFragment;
     private MeFragment meFragment;
     private ActionBar mActionBar;
     private Fragment currentFragment;
@@ -70,7 +64,7 @@ public class MainActivity extends BaseActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        fragmentManager = getFragmentManager();
+        fragmentManager = getSupportFragmentManager();
 
         showFragment(R.id.task_fragment);
     }
@@ -112,14 +106,14 @@ public class MainActivity extends BaseActivity {
                 currentFragment = addFragment;
                 break;
             case R.id.community_fragment:
-                if (communityFragment == null) {
-                    communityFragment = CommunityFragment.newInstance();
-                    fragmentTransaction.add(R.id.content, communityFragment);
+                if (conversationListFragment == null) {
+                    conversationListFragment = new ConversationListFragment();
+                    fragmentTransaction.add(R.id.content, conversationListFragment);
                 } else {
-                    fragmentTransaction.show(communityFragment);
+                    fragmentTransaction.show(conversationListFragment);
                 }
                 mActionBar.setTitle("交流列表");
-                currentFragment = communityFragment;
+                currentFragment = conversationListFragment;
                 break;
             case R.id.me_fragment:
                 if (meFragment == null) {
@@ -147,8 +141,8 @@ public class MainActivity extends BaseActivity {
         if (addFragment != null) {
             transaction.hide(addFragment);
         }
-        if (communityFragment != null) {
-            transaction.hide(communityFragment);
+        if (conversationListFragment != null) {
+            transaction.hide(conversationListFragment);
         }
         if (meFragment != null) {
             transaction.hide(meFragment);
